@@ -1,0 +1,13 @@
+package model
+
+import "learn/fiber/types/enum"
+
+type JwtPayload struct {
+	Id   string     `json:"id"`
+	Role enum.ERole `json:"role"`
+}
+
+type JwtResponse struct {
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
+}
