@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"learn/fiber/utils"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -15,7 +16,7 @@ func JWTMidleware(c *fiber.Ctx) error {
 
 	tokenStr := authHeader[len("Bearer "):]
 
-	payload, err := utils.ValidateToken(tokenStr)
+	payload, err := utils.ValidateToken(tokenStr, os.Getenv("JWT_SECRET_ACCESS_TOKEN"))
 
 	if err != nil {
 		return fiber.NewError(fiber.StatusUnauthorized, err.Error())

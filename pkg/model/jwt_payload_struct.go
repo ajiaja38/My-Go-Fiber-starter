@@ -1,6 +1,6 @@
 package model
 
-import "learn/fiber/types/enum"
+import "learn/fiber/pkg/enum"
 
 type JwtPayload struct {
 	Id   string     `json:"id"`
