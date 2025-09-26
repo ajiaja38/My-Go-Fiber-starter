@@ -38,11 +38,7 @@ func (u *UserHandler) RegisterUserHandler(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.JSON(model.ResponseEntity[model.UserResponse]{
-		Code:    fiber.StatusCreated,
-		Message: "Succes Register User",
-		Data:    *user,
-	})
+	return utils.SuccessResponse(c, fiber.StatusCreated, "Succes Register User", user)
 }
 
 func (u *UserHandler) LoginUserHandler(c *fiber.Ctx) error {
@@ -58,11 +54,7 @@ func (u *UserHandler) LoginUserHandler(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.JSON(model.ResponseEntity[model.JwtResponse]{
-		Code:    fiber.StatusOK,
-		Message: "Succes Login User",
-		Data:    *jwtResponse,
-	})
+	return utils.SuccessResponse(c, fiber.StatusOK, "Succes Login User", jwtResponse)
 }
 
 func (u *UserHandler) RefreshTokenHandler(c *fiber.Ctx) error {
@@ -78,11 +70,7 @@ func (u *UserHandler) RefreshTokenHandler(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.JSON(model.ResponseEntity[model.RefreshTokenResponse]{
-		Code:    fiber.StatusOK,
-		Message: "Succes Refresh Token",
-		Data:    *refreshTokenResponse,
-	})
+	return utils.SuccessResponse(c, fiber.StatusOK, "Succes Refresh Token", refreshTokenResponse)
 }
 
 func (u *UserHandler) FindAllHandler(c *fiber.Ctx) error {
@@ -92,11 +80,7 @@ func (u *UserHandler) FindAllHandler(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.JSON(model.ResponseEntity[[]model.UserResponse]{
-		Code:    fiber.StatusOK,
-		Message: "Succes Find All User",
-		Data:    users,
-	})
+	return utils.SuccessResponse(c, fiber.StatusOK, "Succes Find All Users", users)
 }
 
 func (u *UserHandler) FindByIdHandler(c *fiber.Ctx) error {
@@ -108,11 +92,7 @@ func (u *UserHandler) FindByIdHandler(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.JSON(model.ResponseEntity[model.UserResponse]{
-		Code:    fiber.StatusOK,
-		Message: "Succes Find User By Id",
-		Data:    *user,
-	})
+	return utils.SuccessResponse(c, fiber.StatusOK, "Succes Find User By Id", user)
 }
 
 func (u *UserHandler) UpdateUserByIdHandler(c *fiber.Ctx) error {
@@ -129,11 +109,7 @@ func (u *UserHandler) UpdateUserByIdHandler(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.JSON(model.ResponseEntity[model.UserResponse]{
-		Code:    fiber.StatusOK,
-		Message: "Succes Update User By Id",
-		Data:    *user,
-	})
+	return utils.SuccessResponse(c, fiber.StatusOK, "Succes Update User By Id", user)
 }
 
 func (u *UserHandler) DeleteUserByIdHandler(c *fiber.Ctx) error {
@@ -143,9 +119,5 @@ func (u *UserHandler) DeleteUserByIdHandler(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.JSON(model.ResponseEntity[any]{
-		Code:    fiber.StatusOK,
-		Message: "Succes Delete User By Id",
-		Data:    nil,
-	})
+	return utils.SuccessResponse[*struct{}](c, fiber.StatusOK, "Succes Delete User By Id", nil)
 }
