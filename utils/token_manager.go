@@ -76,20 +76,8 @@ func ValidateToken(token string) (model.JwtPayload, error) {
 		return model.JwtPayload{}, errors.New("invalid token")
 	}
 
-	id, ok := claims["id"].(string)
-
-	if !ok {
-		return model.JwtPayload{}, errors.New("invalid token")
-	}
-
-	role, ok := claims["role"].(string)
-
-	if !ok {
-		return model.JwtPayload{}, errors.New("invalid token")
-	}
-
 	return model.JwtPayload{
-		Id:   id,
-		Role: enum.ERole(role),
+		Id:   claims["id"].(string),
+		Role: enum.ERole(claims["role"].(string)),
 	}, nil
 }

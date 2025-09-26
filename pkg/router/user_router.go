@@ -2,6 +2,7 @@ package router
 
 import (
 	"learn/fiber/pkg/handler"
+	"learn/fiber/pkg/middleware"
 	"learn/fiber/pkg/service"
 
 	"github.com/gofiber/fiber/v2"
@@ -12,5 +13,5 @@ func UserRouter(app fiber.Router) {
 	userHandler := handler.NewUserHandler(userService)
 
 	user := app.Group("/user")
-	user.Get("/:id", userHandler.FindByIdHandler)
+	user.Get("/:id", middleware.JWTMidleware, userHandler.FindByIdHandler)
 }
