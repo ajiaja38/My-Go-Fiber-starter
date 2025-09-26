@@ -11,3 +11,11 @@ type JwtResponse struct {
 	AccessToken  string `json:"accessToken"`
 	RefreshToken string `json:"refreshToken"`
 }
+
+type RefreshTokenRequest struct {
+	RefreshToken string `json:"refreshToken" validate:"required"`
+}
+
+type RefreshTokenResponse struct {
+	AccessToken string `json:"accessToken"`
+}

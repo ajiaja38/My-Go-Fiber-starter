@@ -1,6 +1,7 @@
 package router
 
 import (
+	"learn/fiber/pkg/enum"
 	"learn/fiber/pkg/handler"
 	"learn/fiber/pkg/middleware"
 	"learn/fiber/pkg/service"
@@ -15,6 +16,11 @@ func UserRouter(app fiber.Router, db *gorm.DB) {
 
 	user := app.Group("/user")
 
-	user.Get("/", middleware.JWTMidleware, userHandler.FindAllHandler)
+	user.Post("/register", userHandler.RegisterUserHandler)
+	user.Post("/login", userHandler.LoginUserHandler)
+	user.Get("/", middleware.JWTMidleware, middleware.RoleMiddleware(enum.ROLE_USER, enum.ROLE_ADMIN), userHandler.FindAllHandler)
 	user.Get("/:id", middleware.JWTMidleware, userHandler.FindByIdHandler)
+	user.Put("/refresh-token", userHandler.RefreshTokenHandler)
+	user.Put("/:id", middleware.JWTMidleware, userHandler.UpdateUserByIdHandler)
+	user.Delete("/:id", middleware.JWTMidleware, middleware.RoleMiddleware(enum.ROLE_ADMIN), userHandler.DeleteUserByIdHandler)
 }

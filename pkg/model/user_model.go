@@ -17,6 +17,25 @@ type User struct {
 	Password string     `gorm:"type:varchar(255); not null;" json:"password"`
 }
 
+type UserRegisterRequest struct {
+	Email           string     `validate:"required,email" json:"email"`
+	Username        string     `validate:"required" json:"username"`
+	Password        string     `validate:"required" json:"password"`
+	ConfirmPassword string     `validate:"required" json:"confirmPassword"`
+	Role            enum.ERole `validate:"required,oneof=admin user" json:"role"`
+}
+
+type UserLoginRequest struct {
+	Email    string `validate:"required,email" json:"email"`
+	Password string `validate:"required" json:"password"`
+}
+
+type UserUpdateRequest struct {
+	Email    string     `validate:"omitempty,email" json:"email"`
+	Username string     `validate:"omitempty" json:"username"`
+	Role     enum.ERole `validate:"omitempty,oneof=admin user" json:"role"`
+}
+
 type UserResponse struct {
 	Id        string     `json:"id"`
 	Email     string     `json:"email"`
