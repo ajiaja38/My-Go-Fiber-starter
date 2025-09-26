@@ -1,6 +1,7 @@
 package main
 
 import (
+	"learn/fiber/config"
 	"learn/fiber/pkg/err"
 	"learn/fiber/pkg/model"
 	"learn/fiber/pkg/router"
@@ -42,6 +43,14 @@ func main() {
 		port = ":3000"
 	}
 
+	db, err := config.DBConfig()
+
+	if err != nil {
+		logrus.Error(err)
+	}
+
+	db.AutoMigrate(&model.User{})
+
 	app.Use(logger.New())
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
@@ -64,7 +73,7 @@ func main() {
 
 	route.Get("/metrics", monitor.New(monitor.Config{Title: "Fiber Metrics Page"}))
 
-	router.MainRouter(route)
+	router.MainRouter(route, db)
 
 	logrus.Infof("Server running on port http://localhost%s 🚀", port)
 	logrus.Fatal(app.Listen(port))

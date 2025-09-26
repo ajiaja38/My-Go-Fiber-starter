@@ -1,7 +1,33 @@
 package model
 
+import (
+	"learn/fiber/pkg/enum"
+	"time"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
+
 type User struct {
-	Id       string `json:"id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
+	gorm.Model
+	Id       string     `gorm:"primary_key" json:"id"`
+	Email    string     `gorm:"type:varchar(255); not null; unique" json:"email"`
+	Username string     `gorm:"type:varchar(255); not null;" json:"username"`
+	Role     enum.ERole `gorm:"type:varchar(255); not null;" json:"role"`
+	Password string     `gorm:"type:varchar(255); not null;" json:"password"`
+}
+
+type UserResponse struct {
+	Id        string     `json:"id"`
+	Email     string     `json:"email"`
+	Username  string     `json:"username"`
+	Role      enum.ERole `json:"role"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedAt time.Time  `json:"updatedAt"`
+	DeletedAt *time.Time `json:"deletedAt,omitempty"`
+}
+
+func (user *User) BeforeCreate(db *gorm.DB) error {
+	user.Id = "user-" + uuid.New().String()
+	return nil
 }

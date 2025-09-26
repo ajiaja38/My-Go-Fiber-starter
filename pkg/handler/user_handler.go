@@ -17,6 +17,20 @@ func NewUserHandler(userService service.UserService) *UserHandler {
 	}
 }
 
+func (u *UserHandler) FindAllHandler(c *fiber.Ctx) error {
+	users, err := u.userService.FindAll()
+
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(model.ResponseEntity[[]model.UserResponse]{
+		Code:    fiber.StatusOK,
+		Message: "Succes Find All User",
+		Data:    users,
+	})
+}
+
 func (u *UserHandler) FindByIdHandler(c *fiber.Ctx) error {
 	id := c.Params("id")
 
@@ -26,9 +40,9 @@ func (u *UserHandler) FindByIdHandler(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.JSON(model.ResponseEntity[model.User]{
+	return c.JSON(model.ResponseEntity[model.UserResponse]{
 		Code:    fiber.StatusOK,
-		Message: "success",
+		Message: "Succes Find User By Id",
 		Data:    *user,
 	})
 }
