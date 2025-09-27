@@ -5,6 +5,7 @@ import (
 	"learn/fiber/pkg/err"
 	"learn/fiber/pkg/model"
 	"learn/fiber/pkg/router"
+	"learn/fiber/utils"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
@@ -61,14 +62,9 @@ func main() {
 	app.Use(recover.New())
 
 	route := app.Group("/api/v1")
-
 	route.Get("/", func(c *fiber.Ctx) error {
-		return c.JSON(model.ResponseEntity[any]{
-			Code:    fiber.StatusOK,
-			Message: "Halo Fiber Framework 🚀",
-		})
+		return utils.SuccessResponse[*struct{}](c, fiber.StatusOK, "Halo Fiber Framework 🚀", nil)
 	})
-
 	route.Get("/metrics", monitor.New(monitor.Config{Title: "Fiber Metrics Page"}))
 
 	router.MainRouter(route, db)

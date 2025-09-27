@@ -16,6 +16,6 @@ func RoleMiddleware(requiredRole ...enum.ERole) fiber.Handler {
 			return c.Next()
 		}
 
-		return fiber.NewError(fiber.StatusForbidden, "Forbidden Access, you don't have permission")
+		return fiber.NewError(fiber.StatusForbidden, "Forbidden Access, sorry you don't have permission")
 	}
 }
