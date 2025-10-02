@@ -69,6 +69,6 @@ func main() {
 
 	router.MainRouter(route, db)
 
-	logrus.Infof("Server running on port http://localhost%s/api/v1 🚀", port)
+	logrus.Infof("Server running on http://localhost%s/api/v1 🚀", port)
 	logrus.Fatal(app.Listen(port))
 }
