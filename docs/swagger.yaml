@@ -1,0 +1,388 @@
+basePath: /api/v1
+definitions:
+  enum.ERole:
+    enum:
+    - admin
+    - user
+    type: string
+    x-enum-varnames:
+    - ROLE_ADMIN
+    - ROLE_USER
+  model.JwtResponse:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+    type: object
+  model.MetaPagination:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      totalData:
+        type: integer
+      totalPage:
+        type: integer
+    type: object
+  model.RefreshTokenRequest:
+    properties:
+      refreshToken:
+        type: string
+    required:
+    - refreshToken
+    type: object
+  model.RefreshTokenResponse:
+    properties:
+      accessToken:
+        type: string
+    type: object
+  model.ResponseEntity-any:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.MetaPagination'
+    type: object
+  model.ResponseEntity-array_model_UserResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/model.UserResponse'
+        type: array
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.MetaPagination'
+    type: object
+  model.ResponseEntity-model_JwtResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.JwtResponse'
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.MetaPagination'
+    type: object
+  model.ResponseEntity-model_RefreshTokenResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.RefreshTokenResponse'
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.MetaPagination'
+    type: object
+  model.ResponseEntity-model_UserResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.UserResponse'
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.MetaPagination'
+    type: object
+  model.ResponseError-any:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.MetaPagination'
+      path:
+        type: string
+    type: object
+  model.UserLoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  model.UserRegisterRequest:
+    properties:
+      confirmPassword:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/enum.ERole'
+        enum:
+        - admin
+        - user
+      username:
+        type: string
+    required:
+    - confirmPassword
+    - email
+    - password
+    - role
+    - username
+    type: object
+  model.UserResponse:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      role:
+        $ref: '#/definitions/enum.ERole'
+      updatedAt:
+        type: string
+      username:
+        type: string
+    type: object
+  model.UserUpdateRequest:
+    properties:
+      email:
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/enum.ERole'
+        enum:
+        - admin
+        - user
+      username:
+        type: string
+    type: object
+host: localhost:3001
+info:
+  contact:
+    email: ajicooljazz38@gmail.com
+    name: M. Aji Perdana
+  description: Documentation API Fiber By M. Aji Perdana.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Fiber API Docs
+  version: "1.0"
+paths:
+  /:
+    get:
+      consumes:
+      - application/json
+      description: Returns a welcome message
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseEntity-any'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ResponseError-any'
+      summary: Root Endpoint
+      tags:
+      - status
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseEntity-array_model_UserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ResponseError-any'
+      security:
+      - BearerAuth: []
+      summary: Find All Users
+      tags:
+      - user
+  /user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user details by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseEntity-any'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ResponseError-any'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ResponseError-any'
+      security:
+      - BearerAuth: []
+      summary: Delete User By Id
+      tags:
+      - user
+    get:
+      consumes:
+      - application/json
+      description: Get user details by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseEntity-model_UserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ResponseError-any'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ResponseError-any'
+      security:
+      - BearerAuth: []
+      summary: Find User By Id
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: Update user details by ID
+      parameters:
+      - description: Update User Request Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserUpdateRequest'
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseEntity-model_UserResponse'
+      security:
+      - BearerAuth: []
+      summary: Update User By Id
+      tags:
+      - user
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Log in a user
+      parameters:
+      - description: Login Request Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseEntity-model_JwtResponse'
+      summary: Login User
+      tags:
+      - user
+  /user/refresh-token:
+    put:
+      consumes:
+      - application/json
+      description: Refresh JWT tokens
+      parameters:
+      - description: Refresh Token Request Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.RefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseEntity-model_RefreshTokenResponse'
+      security:
+      - BearerAuth: []
+      summary: Refresh Token
+      tags:
+      - user
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user
+      parameters:
+      - description: Register Request Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserRegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.ResponseEntity-model_UserResponse'
+      summary: Register User
+      tags:
+      - user
+securityDefinitions:
+  BearerAuth:
+    description: 'Masukkan token JWT Anda di sini. Contoh: "Bearer <token>"'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

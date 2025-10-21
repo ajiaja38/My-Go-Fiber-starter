@@ -21,6 +21,14 @@ func NewUserHandler(userService service.UserService) *UserHandler {
 	}
 }
 
+// @Summary		    Register User
+// @Description	Register a new user
+// @Tags			       user
+// @Accept			     json
+// @Produce		    json
+// @Param			request	body	model.UserRegisterRequest	true		"Register Request Payload"
+// @Success		 		 		201							{object}	model.ResponseEntity[model.UserResponse]
+// @Router			     /user/register [post]
 func (u *UserHandler) RegisterUserHandler(c *fiber.Ctx) error {
 	var payload model.UserRegisterRequest
 
@@ -41,6 +49,14 @@ func (u *UserHandler) RegisterUserHandler(c *fiber.Ctx) error {
 	return utils.SuccessResponse(c, fiber.StatusCreated, "Succes Register User", user)
 }
 
+// @Summary		    Login User
+// @Description	Log in a user
+// @Tags			       user
+// @Accept			     json
+// @Produce		    json
+// @Param			request	body	model.UserLoginRequest	true		"Login Request Payload"
+// @Success		 		 		200						{object}	model.ResponseEntity[model.JwtResponse]
+// @Router			     /user/login [post]
 func (u *UserHandler) LoginUserHandler(c *fiber.Ctx) error {
 	var payload model.UserLoginRequest
 
@@ -57,6 +73,15 @@ func (u *UserHandler) LoginUserHandler(c *fiber.Ctx) error {
 	return utils.SuccessResponse(c, fiber.StatusOK, "Succes Login User", jwtResponse)
 }
 
+// @Summary		    Refresh Token
+// @Description	Refresh JWT tokens
+// @Tags			       user
+// @Accept			     json
+// @Produce		    json
+// @Security		        BearerAuth
+// @Param			request	body	model.RefreshTokenRequest	true		"Refresh Token Request Payload"
+// @Success		 		 		200							{object}	model.ResponseEntity[model.RefreshTokenResponse]
+// @Router			     /user/refresh-token [put]
 func (u *UserHandler) RefreshTokenHandler(c *fiber.Ctx) error {
 	var payload model.RefreshTokenRequest
 
@@ -73,6 +98,15 @@ func (u *UserHandler) RefreshTokenHandler(c *fiber.Ctx) error {
 	return utils.SuccessResponse(c, fiber.StatusOK, "Succes Refresh Token", refreshTokenResponse)
 }
 
+// @Summary		    Find All Users
+// @Description	Get a list of all users
+// @Tags			       user
+// @Accept			     json
+// @Produce		    json
+// @Security		        BearerAuth
+// @Success		 	 	200	{object}	model.ResponseEntity[[]model.UserResponse]
+// @Failure		 	 	401	{object}	model.ResponseError[any]
+// @Router			     /user [get]
 func (u *UserHandler) FindAllHandler(c *fiber.Ctx) error {
 	users, err := u.userService.FindAll()
 
@@ -83,6 +117,17 @@ func (u *UserHandler) FindAllHandler(c *fiber.Ctx) error {
 	return utils.SuccessResponse(c, fiber.StatusOK, "Succes Find All Users", users)
 }
 
+// @Summary		    Find User By Id
+// @Description	Get user details by ID
+// @Tags			       user
+// @Accept			     json
+// @Produce		    json
+// @Security		        BearerAuth
+// @Param			id	path	string	true		"User ID"
+// @Success		 	 		200		{object}	model.ResponseEntity[model.UserResponse]
+// @Failure		 	 		401		{object}	model.ResponseError[any]
+// @Failure		 	 		404		{object}	model.ResponseError[any]
+// @Router			     /user/{id} [get]
 func (u *UserHandler) FindByIdHandler(c *fiber.Ctx) error {
 	id := c.Params("id")
 
@@ -95,6 +140,16 @@ func (u *UserHandler) FindByIdHandler(c *fiber.Ctx) error {
 	return utils.SuccessResponse(c, fiber.StatusOK, "Succes Find User By Id", user)
 }
 
+// @Summary		    Update User By Id
+// @Description	Update user details by ID
+// @Tags			       user
+// @Accept			     json
+// @Produce		    json
+// @Security		        BearerAuth
+// @Param			request	body	model.UserUpdateRequest	true		"Update User Request Payload"
+// @Param			id		path	string					true		"User ID"
+// @Success		 		 		200						{object}	model.ResponseEntity[model.UserResponse]
+// @Router			     /user/{id} [put]
 func (u *UserHandler) UpdateUserByIdHandler(c *fiber.Ctx) error {
 	id := c.Params("id")
 	var payload model.UserUpdateRequest
@@ -112,6 +167,17 @@ func (u *UserHandler) UpdateUserByIdHandler(c *fiber.Ctx) error {
 	return utils.SuccessResponse(c, fiber.StatusOK, "Succes Update User By Id", user)
 }
 
+// @Summary		    Delete User By Id
+// @Description	Delete user details by ID
+// @Tags			       user
+// @Accept			     json
+// @Produce		    json
+// @Security		        BearerAuth
+// @Param			id	path	string	true		"User ID"
+// @Success		 	 		200		{object}	model.ResponseEntity[any]
+// @Failure		 	 		401		{object}	model.ResponseError[any]
+// @Failure		 	 		404		{object}	model.ResponseError[any]
+// @Router			    /user/{id} [delete]
 func (u *UserHandler) DeleteUserByIdHandler(c *fiber.Ctx) error {
 	id := c.Params("id")
 
