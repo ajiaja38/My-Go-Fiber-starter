@@ -117,6 +117,36 @@ func (u *UserHandler) FindAllHandler(c *fiber.Ctx) error {
 	return utils.SuccessResponse(c, fiber.StatusOK, "Succes Find All Users", users)
 }
 
+// @Summary		    Find All Users Paginate
+// @Description	Get a list of all users with pagination
+// @Tags			       user
+// @Accept			     json
+// @Produce		    json
+// @Security		        BearerAuth
+// @Param			request	query	model.PaginationRequest	true		"Pagination Request Payload"
+// @Success		 		 		200						{object}	model.ResponseEntityPagination[[]model.UserResponse]
+// @Failure		 		 		401						{object}	model.ResponseError[any]
+// @Router			     /user/paginate [get]
+func (u *UserHandler) FindAllPaginateHandler(c *fiber.Ctx) error {
+	var params model.PaginationRequest
+
+	if err := c.QueryParser(&params); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	if err := u.validator.Struct(params); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	meta, users, err := u.userService.FindAllPaginated(params)
+
+	if err != nil {
+		return err
+	}
+
+	return utils.SuccessResponsePaginate(c, int(fiber.StatusOK), "Success Find All User Paginate", users, meta)
+}
+
 // @Summary		    Find User By Id
 // @Description	Get user details by ID
 // @Tags			       user

@@ -36,20 +36,7 @@ const docTemplate = `{
                     "status"
                 ],
                 "summary": "Root Endpoint",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.ResponseEntity-any"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/model.ResponseError-any"
-                        }
-                    }
-                }
+                "responses": {}
             }
         },
         "/user": {
@@ -115,6 +102,59 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.ResponseEntity-model_JwtResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/paginate": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get a list of all users with pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Find All Users Paginate",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseEntityPagination-array_model_UserResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseError-any"
                         }
                     }
                 }
@@ -402,13 +442,69 @@ const docTemplate = `{
                 "data": {},
                 "message": {
                     "type": "string"
-                },
-                "meta": {
-                    "$ref": "#/definitions/model.MetaPagination"
                 }
             }
         },
         "model.ResponseEntity-array_model_UserResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.UserResponse"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ResponseEntity-model_JwtResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/model.JwtResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ResponseEntity-model_RefreshTokenResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/model.RefreshTokenResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ResponseEntity-model_UserResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/model.UserResponse"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ResponseEntityPagination-array_model_UserResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -428,57 +524,6 @@ const docTemplate = `{
                 }
             }
         },
-        "model.ResponseEntity-model_JwtResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "data": {
-                    "$ref": "#/definitions/model.JwtResponse"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "meta": {
-                    "$ref": "#/definitions/model.MetaPagination"
-                }
-            }
-        },
-        "model.ResponseEntity-model_RefreshTokenResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "data": {
-                    "$ref": "#/definitions/model.RefreshTokenResponse"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "meta": {
-                    "$ref": "#/definitions/model.MetaPagination"
-                }
-            }
-        },
-        "model.ResponseEntity-model_UserResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "data": {
-                    "$ref": "#/definitions/model.UserResponse"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "meta": {
-                    "$ref": "#/definitions/model.MetaPagination"
-                }
-            }
-        },
         "model.ResponseError-any": {
             "type": "object",
             "properties": {
@@ -488,9 +533,6 @@ const docTemplate = `{
                 "data": {},
                 "message": {
                     "type": "string"
-                },
-                "meta": {
-                    "$ref": "#/definitions/model.MetaPagination"
                 },
                 "path": {
                     "type": "string"

@@ -21,6 +21,7 @@ func UserRouter(app fiber.Router, db *gorm.DB) {
 	user.Post("/register", userHandler.RegisterUserHandler)
 	user.Post("/login", userHandler.LoginUserHandler)
 	user.Get("/", middleware.JWTMidleware, middleware.RoleMiddleware(enum.ROLE_USER, enum.ROLE_ADMIN), userHandler.FindAllHandler)
+	user.Get("/paginate", middleware.JWTMidleware, middleware.RoleMiddleware(enum.ROLE_USER, enum.ROLE_ADMIN), userHandler.FindAllPaginateHandler)
 	user.Get("/:id", middleware.JWTMidleware, userHandler.FindByIdHandler)
 	user.Put("/refresh-token", userHandler.RefreshTokenHandler)
 	user.Put("/:id", middleware.JWTMidleware, userHandler.UpdateUserByIdHandler)

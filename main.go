@@ -98,8 +98,6 @@ func main() {
 // @Tags			       status
 // @Accept			     json
 // @Produce		    json
-// @Success		 	 			200	{object}	model.ResponseEntity[any]
-// @Failure		401	{object}	model.ResponseError[any]
 // @Router			     / [get]
 func RootHandler(c *fiber.Ctx) error {
 	return utils.SuccessResponse[any](c, fiber.StatusOK, "Halo Fiber Framework 🚀", nil)

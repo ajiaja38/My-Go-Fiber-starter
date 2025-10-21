@@ -14,6 +14,7 @@ type UserService interface {
 	LoginUser(payload model.UserLoginRequest) (*model.JwtResponse, error)
 	RefreshToken(refreshToken string) (*model.RefreshTokenResponse, error)
 	FindAll() ([]model.UserResponse, error)
+	FindAllPaginated(pagination model.PaginationRequest) (*model.MetaPagination, []model.UserResponse, error)
 	FindById(id string) (*model.UserResponse, error)
 	UpdateUserById(id string, payload model.UserUpdateRequest) (*model.UserResponse, error)
 	DeleteUserById(id string) error
@@ -117,6 +118,32 @@ func (u *userService) FindAll() ([]model.UserResponse, error) {
 	}
 
 	return userResponses, nil
+}
+
+func (u *userService) FindAllPaginated(pagination model.PaginationRequest) (*model.MetaPagination, []model.UserResponse, error) {
+	users, totalData, err := u.repository.FindAllPaginated(pagination.Page, pagination.Limit, pagination.Search)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var userResponses []model.UserResponse = []model.UserResponse{}
+
+	for _, user := range users {
+		userResponse := transformUserResponse(user)
+		userResponses = append(userResponses, userResponse)
+	}
+
+	totalPage := (totalData + int64(pagination.Limit) - 1) / int64(pagination.Limit)
+
+	meta := &model.MetaPagination{
+		Page:      pagination.Page,
+		Limit:     pagination.Limit,
+		TotalPage: int(totalPage),
+		TotalData: int(totalData),
+	}
+
+	return meta, userResponses, nil
 }
 
 func (u *userService) FindById(id string) (*model.UserResponse, error) {

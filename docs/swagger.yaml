@@ -45,10 +45,46 @@ definitions:
       data: {}
       message:
         type: string
-      meta:
-        $ref: '#/definitions/model.MetaPagination'
     type: object
   model.ResponseEntity-array_model_UserResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/model.UserResponse'
+        type: array
+      message:
+        type: string
+    type: object
+  model.ResponseEntity-model_JwtResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.JwtResponse'
+      message:
+        type: string
+    type: object
+  model.ResponseEntity-model_RefreshTokenResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.RefreshTokenResponse'
+      message:
+        type: string
+    type: object
+  model.ResponseEntity-model_UserResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/model.UserResponse'
+      message:
+        type: string
+    type: object
+  model.ResponseEntityPagination-array_model_UserResponse:
     properties:
       code:
         type: integer
@@ -61,39 +97,6 @@ definitions:
       meta:
         $ref: '#/definitions/model.MetaPagination'
     type: object
-  model.ResponseEntity-model_JwtResponse:
-    properties:
-      code:
-        type: integer
-      data:
-        $ref: '#/definitions/model.JwtResponse'
-      message:
-        type: string
-      meta:
-        $ref: '#/definitions/model.MetaPagination'
-    type: object
-  model.ResponseEntity-model_RefreshTokenResponse:
-    properties:
-      code:
-        type: integer
-      data:
-        $ref: '#/definitions/model.RefreshTokenResponse'
-      message:
-        type: string
-      meta:
-        $ref: '#/definitions/model.MetaPagination'
-    type: object
-  model.ResponseEntity-model_UserResponse:
-    properties:
-      code:
-        type: integer
-      data:
-        $ref: '#/definitions/model.UserResponse'
-      message:
-        type: string
-      meta:
-        $ref: '#/definitions/model.MetaPagination'
-    type: object
   model.ResponseError-any:
     properties:
       code:
@@ -101,8 +104,6 @@ definitions:
       data: {}
       message:
         type: string
-      meta:
-        $ref: '#/definitions/model.MetaPagination'
       path:
         type: string
     type: object
@@ -191,15 +192,7 @@ paths:
       description: Returns a welcome message
       produces:
       - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.ResponseEntity-any'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/model.ResponseError-any'
+      responses: {}
       summary: Root Endpoint
       tags:
       - status
@@ -333,6 +326,39 @@ paths:
           schema:
             $ref: '#/definitions/model.ResponseEntity-model_JwtResponse'
       summary: Login User
+      tags:
+      - user
+  /user/paginate:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all users with pagination
+      parameters:
+      - default: 10
+        in: query
+        name: limit
+        type: integer
+      - default: 1
+        in: query
+        name: page
+        type: integer
+      - in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseEntityPagination-array_model_UserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ResponseError-any'
+      security:
+      - BearerAuth: []
+      summary: Find All Users Paginate
       tags:
       - user
   /user/refresh-token:
