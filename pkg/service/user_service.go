@@ -1,13 +1,12 @@
 package service
 
 import (
-	"fmt"
 	"learn/fiber/pkg/model"
+	"learn/fiber/pkg/repository"
 	"learn/fiber/utils"
 
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 type UserService interface {
@@ -21,12 +20,12 @@ type UserService interface {
 }
 
 type userService struct {
-	db *gorm.DB
+	repository *repository.UserRepository
 }
 
-func NewUserService(db *gorm.DB) UserService {
+func NewUserService(repository *repository.UserRepository) UserService {
 	return &userService{
-		db: db,
+		repository: repository,
 	}
 }
 
@@ -48,7 +47,7 @@ func (u *userService) RegisterUser(payload model.UserRegisterRequest) (*model.Us
 		Role:     payload.Role,
 	}
 
-	if err := u.db.Create(&user).Error; err != nil {
+	if err := u.repository.Create(&user); err != nil {
 		return nil, fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
@@ -58,9 +57,9 @@ func (u *userService) RegisterUser(payload model.UserRegisterRequest) (*model.Us
 }
 
 func (u *userService) LoginUser(payload model.UserLoginRequest) (*model.JwtResponse, error) {
-	var user model.User
+	user, err := u.repository.FindByEmail(payload.Email)
 
-	if err := u.db.First(&user, "email = ?", payload.Email).Error; err != nil {
+	if err != nil {
 		return nil, fiber.NewError(fiber.StatusUnauthorized, "Invalid email or password")
 	}
 
@@ -104,9 +103,9 @@ func (u *userService) RefreshToken(refreshToken string) (*model.RefreshTokenResp
 }
 
 func (u *userService) FindAll() ([]model.UserResponse, error) {
-	var users []model.User
+	users, err := u.repository.FindAll()
 
-	if err := u.db.Find(&users).Error; err != nil {
+	if err != nil {
 		return nil, err
 	}
 
@@ -121,40 +120,40 @@ func (u *userService) FindAll() ([]model.UserResponse, error) {
 }
 
 func (u *userService) FindById(id string) (*model.UserResponse, error) {
-	var user model.User
+	user, err := u.repository.FindById(id)
 
-	if err := u.db.First(&user, "id = ?", id).Error; err != nil {
-		return nil, fiber.NewError(fiber.StatusNotFound, fmt.Sprintf("User not found: %s", err.Error()))
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusNotFound, err.Error())
 	}
 
-	userResponse := transformUserResponse(user)
+	userResponse := transformUserResponse(*user)
 
 	return &userResponse, nil
 }
 
 func (u *userService) UpdateUserById(id string, payload model.UserUpdateRequest) (*model.UserResponse, error) {
-	var user model.User
+	user, err := u.repository.FindById(id)
 
-	if err := u.db.First(&user, "id = ?", id).Error; err != nil {
-		return nil, fiber.NewError(fiber.StatusNotFound, fmt.Sprintf("User not found: %s", err.Error()))
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusNotFound, err.Error())
 	}
 
 	user.Email = payload.Email
 	user.Username = payload.Username
 	user.Role = payload.Role
 
-	if err := u.db.Save(&user).Error; err != nil {
+	if err := u.repository.Update(user); err != nil {
 		return nil, fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	userResponse := transformUserResponse(user)
+	userResponse := transformUserResponse(*user)
 
 	return &userResponse, nil
 }
 
 func (u *userService) DeleteUserById(id string) error {
-	if err := u.db.Where("id = ?", id).Delete(&model.User{}).Error; err != nil {
-		return fiber.NewError(fiber.StatusNotFound, fmt.Sprintf("User not found: %s", err.Error()))
+	if err := u.repository.Delete(id); err != nil {
+		return fiber.NewError(fiber.StatusNotFound, err.Error())
 	}
 
 	return nil

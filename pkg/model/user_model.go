@@ -15,6 +15,7 @@ type User struct {
 	Username string     `gorm:"type:varchar(255); not null;" json:"username"`
 	Role     enum.ERole `gorm:"type:varchar(255); not null;" json:"role"`
 	Password string     `gorm:"type:varchar(255); not null;" json:"password"`
+	Blogs    []Blog     `gorm:"foreignKey:UserId" json:"blogs,omitempty"`
 }
 
 type UserRegisterRequest struct {
@@ -26,8 +27,8 @@ type UserRegisterRequest struct {
 }
 
 type UserLoginRequest struct {
-	Email    string `validate:"required,email" json:"email"`
-	Password string `validate:"required" json:"password"`
+	Email    string `validate:"required,email" json:"email" example:"G2G5e@example.com"`
+	Password string `validate:"required" json:"password" example:"P@ssw0rd!"`
 }
 
 type UserUpdateRequest struct {

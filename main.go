@@ -4,7 +4,6 @@ import (
 	"learn/fiber/config"
 	_ "learn/fiber/docs"
 	"learn/fiber/pkg/err"
-	"learn/fiber/pkg/model"
 	"learn/fiber/pkg/router"
 	"learn/fiber/utils"
 	"os"
@@ -69,7 +68,7 @@ func main() {
 		logrus.Error(err)
 	}
 
-	db.AutoMigrate(&model.User{})
+	utils.AutoMigrateEntity(db)
 
 	app.Use(logger.New())
 	app.Use(cors.New(cors.Config{

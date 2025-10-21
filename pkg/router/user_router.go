@@ -4,6 +4,7 @@ import (
 	"learn/fiber/pkg/enum"
 	"learn/fiber/pkg/handler"
 	"learn/fiber/pkg/middleware"
+	"learn/fiber/pkg/repository"
 	"learn/fiber/pkg/service"
 
 	"github.com/gofiber/fiber/v2"
@@ -11,7 +12,8 @@ import (
 )
 
 func UserRouter(app fiber.Router, db *gorm.DB) {
-	userService := service.NewUserService(db)
+	userRepository := repository.NewUserRepository(db)
+	userService := service.NewUserService(userRepository)
 	userHandler := handler.NewUserHandler(userService)
 
 	user := app.Group("/user")

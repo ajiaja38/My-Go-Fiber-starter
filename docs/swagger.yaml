@@ -109,8 +109,10 @@ definitions:
   model.UserLoginRequest:
     properties:
       email:
+        example: G2G5e@example.com
         type: string
       password:
+        example: P@ssw0rd!
         type: string
     required:
     - email
