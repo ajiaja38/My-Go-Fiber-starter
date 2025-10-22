@@ -2,13 +2,15 @@ package config
 
 import (
 	"fmt"
+	"learn/fiber/utils"
 	"os"
 
+	"github.com/gofiber/fiber/v2/log"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func DBConfig() (*gorm.DB, error) {
+func DBConfig() *gorm.DB {
 	host := os.Getenv("DB_HOST")
 	user := os.Getenv("DB_USER")
 	password := os.Getenv("DB_PASSWORD")
@@ -19,5 +21,11 @@ func DBConfig() (*gorm.DB, error) {
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
-	return db, err
+	utils.AutoMigrateEntity(db)
+
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+
+	return db
 }

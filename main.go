@@ -4,7 +4,10 @@ import (
 	"learn/fiber/config"
 	_ "learn/fiber/docs"
 	"learn/fiber/pkg/err"
+	"learn/fiber/pkg/handler"
+	"learn/fiber/pkg/repository"
 	"learn/fiber/pkg/router"
+	"learn/fiber/pkg/service"
 	"learn/fiber/utils"
 	"os"
 
@@ -62,13 +65,16 @@ func main() {
 		port = ":3000"
 	}
 
-	db, err := config.DBConfig()
+	db := config.DBConfig()
 
-	if err != nil {
-		logrus.Error(err)
-	}
+	// Init Repository
+	userRepository := repository.NewUserRepository(db)
 
-	utils.AutoMigrateEntity(db)
+	// Init Service
+	userService := service.NewUserService(userRepository)
+
+	// Init Handler
+	userHandler := handler.NewUserHandler(userService)
 
 	app.Use(logger.New())
 	app.Use(cors.New(cors.Config{
@@ -87,7 +93,8 @@ func main() {
 	route.Get("/", RootHandler)
 	route.Get("/metrics", monitor.New(monitor.Config{Title: "Fiber Metrics Page"}))
 
-	router.MainRouter(route, db)
+	// Init Router
+	router.UserRouter(route, userHandler)
 
 	logrus.Infof("Server running on http://localhost%s/api/v1 🚀", port)
 	logrus.Fatal(app.Listen(port))
