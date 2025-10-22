@@ -134,8 +134,12 @@ func (u *UserHandler) FindAllPaginateHandler(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	if err := u.validator.Struct(params); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	if params.Page <= 0 {
+		params.Page = 1
+	}
+
+	if params.Limit <= 0 {
+		params.Limit = 5
 	}
 
 	meta, users, err := u.userService.FindAllPaginated(params)
