@@ -110,7 +110,7 @@ func (u *userService) FindAll() ([]model.UserResponse, error) {
 		return nil, err
 	}
 
-	var userResponses []model.UserResponse
+	var userResponses []model.UserResponse = []model.UserResponse{}
 
 	for _, user := range users {
 		userResponse := transformUserResponse(user)
