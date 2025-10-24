@@ -60,10 +60,6 @@ func (f *fileService) Upload(file *multipart.FileHeader) (string, error) {
 
 	defer fileContent.Close()
 
-	if err != nil {
-		return "", fiber.NewError(fiber.StatusBadRequest, err.Error())
-	}
-
 	key := fmt.Sprintf("data/kehadiran/image/%s", time.Now().Format("20060102150405_")+file.Filename)
 
 	uploader := manager.NewUploader(f.client)

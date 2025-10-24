@@ -11,11 +11,13 @@ import (
 	"learn/fiber/pkg/service"
 	"learn/fiber/utils"
 	"os"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -95,6 +97,13 @@ func main() {
 	}))
 	app.Use(recover.New())
 	app.Use(middleware.LimitUploadSize())
+	app.Use(limiter.New(limiter.Config{
+		Max:        30,
+		Expiration: 10 * time.Second,
+		LimitReached: func(c *fiber.Ctx) error {
+			return fiber.NewError(fiber.StatusTooManyRequests, "Sorry, To Many Request")
+		},
+	}))
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
