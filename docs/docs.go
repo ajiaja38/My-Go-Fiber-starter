@@ -54,6 +54,13 @@ const docTemplate = `{
                 "summary": "Upload File",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Api Key for access Public Endpoint",
+                        "name": "X-Api-Key",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "type": "file",
                         "description": "File",
                         "name": "file",

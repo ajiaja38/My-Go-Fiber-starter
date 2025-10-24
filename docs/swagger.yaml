@@ -202,6 +202,11 @@ paths:
       - multipart/form-data
       description: Upload File to S3
       parameters:
+      - description: Api Key for access Public Endpoint
+        in: header
+        name: X-Api-Key
+        required: true
+        type: string
       - description: File
         in: formData
         name: file

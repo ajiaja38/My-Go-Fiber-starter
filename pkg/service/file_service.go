@@ -1,7 +1,6 @@
 package service
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"mime/multipart"
@@ -11,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gofiber/fiber/v2"
 )
@@ -60,19 +60,18 @@ func (f *fileService) Upload(file *multipart.FileHeader) (string, error) {
 
 	defer fileContent.Close()
 
-	buffer := new(bytes.Buffer)
-	_, err = buffer.ReadFrom(fileContent)
-
 	if err != nil {
 		return "", fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	key := fmt.Sprintf("data/kehadiran/image/%s", time.Now().Format("20060102150405_")+file.Filename)
 
-	_, err = f.client.PutObject(context.TODO(), &s3.PutObjectInput{
+	uploader := manager.NewUploader(f.client)
+
+	_, err = uploader.Upload(context.TODO(), &s3.PutObjectInput{
 		Bucket:             aws.String(f.bucket),
 		Key:                aws.String(key),
-		Body:               bytes.NewReader(buffer.Bytes()),
+		Body:               fileContent,
 		ACL:                "public-read",
 		ContentType:        aws.String(file.Header.Get("Content-Type")),
 		ContentDisposition: aws.String("inline"),

@@ -5,6 +5,7 @@ import (
 	_ "learn/fiber/docs"
 	"learn/fiber/pkg/err"
 	"learn/fiber/pkg/handler"
+	"learn/fiber/pkg/middleware"
 	"learn/fiber/pkg/repository"
 	"learn/fiber/pkg/router"
 	"learn/fiber/pkg/service"
@@ -86,12 +87,14 @@ func main() {
 	app.Use(logger.New())
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
+		AllowMethods: "GET,POST,PUT,DELETE,OPTIONS",
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 	app.Use(compress.New(compress.Config{
 		Level: compress.LevelBestSpeed,
 	}))
 	app.Use(recover.New())
+	app.Use(middleware.LimitUploadSize())
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 

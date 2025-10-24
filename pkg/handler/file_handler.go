@@ -20,7 +20,8 @@ func NewFileHandler(fileService service.FileService) *FileHandler {
 // @Tags			File
 // @Accept			multipart/form-data
 // @Produce		json
-// @Param			file	formData	file	true	"File"
+// @Param			X-Api-Key	header		string	true	"Api Key for access Public Endpoint"
+// @Param			file		formData	file	true	"File"
 // @Router			/file/upload [post]
 func (h *FileHandler) UploadFileHandler(c *fiber.Ctx) error {
 	file, err := c.FormFile("file")

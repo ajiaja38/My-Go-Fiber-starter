@@ -2,6 +2,7 @@ package router
 
 import (
 	"learn/fiber/pkg/handler"
+	"learn/fiber/pkg/middleware"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -9,5 +10,5 @@ import (
 func FileRouter(app fiber.Router, fileHandler *handler.FileHandler) {
 	file := app.Group("/file")
 
-	file.Post("/upload", fileHandler.UploadFileHandler)
+	file.Post("/upload", middleware.ApiKeyGuard, fileHandler.UploadFileHandler)
 }
