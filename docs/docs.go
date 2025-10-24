@@ -39,6 +39,31 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/file/upload": {
+            "post": {
+                "description": "Upload File to S3",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "File"
+                ],
+                "summary": "Upload File",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "File",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/user": {
             "get": {
                 "security": [
@@ -127,16 +152,19 @@ const docTemplate = `{
                 "summary": "Find All Users Paginate",
                 "parameters": [
                     {
+                        "maximum": 100,
+                        "minimum": 1,
                         "type": "integer",
-                        "default": 10,
                         "name": "limit",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     },
                     {
+                        "minimum": 1,
                         "type": "integer",
-                        "default": 1,
                         "name": "page",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     },
                     {
                         "type": "string",

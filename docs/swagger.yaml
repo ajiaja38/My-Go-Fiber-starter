@@ -196,6 +196,23 @@ paths:
       summary: Root Endpoint
       tags:
       - status
+  /file/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload File to S3
+      parameters:
+      - description: File
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses: {}
+      summary: Upload File
+      tags:
+      - File
   /user:
     get:
       consumes:
@@ -334,13 +351,16 @@ paths:
       - application/json
       description: Get a list of all users with pagination
       parameters:
-      - default: 10
-        in: query
+      - in: query
+        maximum: 100
+        minimum: 1
         name: limit
+        required: true
         type: integer
-      - default: 1
-        in: query
+      - in: query
+        minimum: 1
         name: page
+        required: true
         type: integer
       - in: query
         name: search

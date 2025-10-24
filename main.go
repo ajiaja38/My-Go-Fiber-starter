@@ -12,6 +12,7 @@ import (
 	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/log"
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -72,9 +73,15 @@ func main() {
 
 	// Init Service
 	userService := service.NewUserService(userRepository)
+	fileService, err := service.NewFileService()
+
+	if err != nil {
+		log.Fatalf("Error creating file service: %v", err)
+	}
 
 	// Init Handler
 	userHandler := handler.NewUserHandler(userService)
+	fileHandler := handler.NewFileHandler(fileService)
 
 	app.Use(logger.New())
 	app.Use(cors.New(cors.Config{
@@ -95,6 +102,7 @@ func main() {
 
 	// Init Router
 	router.UserRouter(route, userHandler)
+	router.FileRouter(route, fileHandler)
 
 	logrus.Infof("Server running on http://localhost%s/api/v1 🚀", port)
 	logrus.Fatal(app.Listen(port))
