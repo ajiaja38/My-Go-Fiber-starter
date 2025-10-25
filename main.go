@@ -127,5 +127,5 @@ func main() {
 // @Produce		    json
 // @Router			     / [get]
 func RootHandler(c *fiber.Ctx) error {
-	return utils.SuccessResponse[any](c, fiber.StatusOK, "Halo Fiber Framework 🚀", nil)
+	return utils.SuccessResponse[any](c, fiber.StatusOK, "Halo From Fiber 🚀", nil)
 }
