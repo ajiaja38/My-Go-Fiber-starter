@@ -9,7 +9,7 @@ type Blog struct {
 	gorm.Model
 	Id     string `gorm:"primary_key" json:"id"`
 	Title  string `gorm:"type:varchar(255); not null;" json:"title"`
-	Body   string `gorm:"type:varchar(255); not null;" json:"body"`
+	Body   string `gorm:"type:longtext; not null;" json:"body"`
 	UserId string `gorm:"type:varchar(255); not null;" json:"userId"`
 	User   User   `gorm:"foreignKey:UserId" json:"user"`
 }

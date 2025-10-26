@@ -18,6 +18,11 @@ type User struct {
 	Blogs    []Blog     `gorm:"foreignKey:UserId" json:"blogs,omitempty"`
 }
 
+func (user *User) BeforeCreate(db *gorm.DB) error {
+	user.Id = "user-" + uuid.New().String()
+	return nil
+}
+
 type UserRegisterRequest struct {
 	Email           string     `validate:"required,email" json:"email"`
 	Username        string     `validate:"required" json:"username"`
@@ -45,9 +50,4 @@ type UserResponse struct {
 	CreatedAt time.Time  `json:"createdAt"`
 	UpdatedAt time.Time  `json:"updatedAt"`
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`
-}
-
-func (user *User) BeforeCreate(db *gorm.DB) error {
-	user.Id = "user-" + uuid.New().String()
-	return nil
 }
