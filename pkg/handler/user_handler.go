@@ -219,5 +219,5 @@ func (u *UserHandler) DeleteUserByIdHandler(c *fiber.Ctx) error {
 		return err
 	}
 
-	return utils.SuccessResponse[*struct{}](c, fiber.StatusOK, "Succes Delete User By Id", nil)
+	return utils.SuccessResponse[*struct{}](c, fiber.StatusOK, "Succes Delete User By Id 🚀", nil)
 }
