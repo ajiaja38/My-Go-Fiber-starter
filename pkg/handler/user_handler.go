@@ -70,7 +70,7 @@ func (u *UserHandler) LoginUserHandler(c *fiber.Ctx) error {
 		return err
 	}
 
-	return utils.SuccessResponse(c, fiber.StatusOK, "Succes Login User", jwtResponse)
+	return utils.SuccessResponse(c, fiber.StatusOK, "Succes Login User 🚀", jwtResponse)
 }
 
 // @Summary		    Refresh Token
