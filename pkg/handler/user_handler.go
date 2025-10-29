@@ -95,7 +95,7 @@ func (u *UserHandler) RefreshTokenHandler(c *fiber.Ctx) error {
 		return err
 	}
 
-	return utils.SuccessResponse(c, fiber.StatusOK, "Succes Refresh Token", refreshTokenResponse)
+	return utils.SuccessResponse(c, fiber.StatusOK, "Succes Refresh Token 🚀", refreshTokenResponse)
 }
 
 // @Summary		    Find All Users
