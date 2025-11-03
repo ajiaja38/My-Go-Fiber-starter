@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"learn/fiber/pkg/model"
 	"learn/fiber/pkg/service"
 	"learn/fiber/utils"
@@ -198,7 +199,7 @@ func (u *UserHandler) UpdateUserByIdHandler(c *fiber.Ctx) error {
 		return err
 	}
 
-	return utils.SuccessResponse(c, fiber.StatusOK, "Succes Update User By Id", user)
+	return utils.SuccessResponse(c, fiber.StatusOK, fmt.Sprintf("Success get user with id %s", user.Id), user)
 }
 
 // @Summary		    Delete User By Id
