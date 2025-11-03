@@ -10,13 +10,13 @@ import (
 )
 
 type UserService interface {
-	RegisterUser(payload model.UserRegisterRequest) (*model.UserResponse, error)
-	LoginUser(payload model.UserLoginRequest) (*model.JwtResponse, error)
+	RegisterUser(payload *model.UserRegisterRequest) (*model.UserResponse, error)
+	LoginUser(payload *model.UserLoginRequest) (*model.JwtResponse, error)
 	RefreshToken(refreshToken string) (*model.RefreshTokenResponse, error)
 	FindAll() ([]model.UserResponse, error)
-	FindAllPaginated(pagination model.PaginationRequest) (*model.MetaPagination, []model.UserResponse, error)
+	FindAllPaginated(pagination *model.PaginationRequest) (*model.MetaPagination, []model.UserResponse, error)
 	FindById(id string) (*model.UserResponse, error)
-	UpdateUserById(id string, payload model.UserUpdateRequest) (*model.UserResponse, error)
+	UpdateUserById(id string, payload *model.UserUpdateRequest) (*model.UserResponse, error)
 	DeleteUserById(id string) error
 }
 
@@ -30,7 +30,7 @@ func NewUserService(repository *repository.UserRepository) UserService {
 	}
 }
 
-func (u *userService) RegisterUser(payload model.UserRegisterRequest) (*model.UserResponse, error) {
+func (u *userService) RegisterUser(payload *model.UserRegisterRequest) (*model.UserResponse, error) {
 	if payload.Password != payload.ConfirmPassword {
 		return nil, fiber.NewError(fiber.StatusBadRequest, "Password and Confirm Password do not match")
 	}
@@ -57,7 +57,7 @@ func (u *userService) RegisterUser(payload model.UserRegisterRequest) (*model.Us
 	return &userResponse, nil
 }
 
-func (u *userService) LoginUser(payload model.UserLoginRequest) (*model.JwtResponse, error) {
+func (u *userService) LoginUser(payload *model.UserLoginRequest) (*model.JwtResponse, error) {
 	user, err := u.repository.FindByEmail(payload.Email)
 
 	if err != nil {
@@ -120,7 +120,7 @@ func (u *userService) FindAll() ([]model.UserResponse, error) {
 	return userResponses, nil
 }
 
-func (u *userService) FindAllPaginated(pagination model.PaginationRequest) (*model.MetaPagination, []model.UserResponse, error) {
+func (u *userService) FindAllPaginated(pagination *model.PaginationRequest) (*model.MetaPagination, []model.UserResponse, error) {
 	users, totalData, err := u.repository.FindAllPaginated(pagination.Page, pagination.Limit, pagination.Search)
 
 	if err != nil {
@@ -158,7 +158,7 @@ func (u *userService) FindById(id string) (*model.UserResponse, error) {
 	return &userResponse, nil
 }
 
-func (u *userService) UpdateUserById(id string, payload model.UserUpdateRequest) (*model.UserResponse, error) {
+func (u *userService) UpdateUserById(id string, payload *model.UserUpdateRequest) (*model.UserResponse, error) {
 	user, err := u.repository.FindById(id)
 
 	if err != nil {

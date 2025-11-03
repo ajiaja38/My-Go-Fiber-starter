@@ -40,7 +40,7 @@ func (u *UserHandler) RegisterUserHandler(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Password must be at least 6 characters long, contain at least one uppercase letter, one number, and one special character")
 	}
 
-	user, err := u.userService.RegisterUser(payload)
+	user, err := u.userService.RegisterUser(&payload)
 
 	if err != nil {
 		return err
@@ -64,7 +64,7 @@ func (u *UserHandler) LoginUserHandler(c *fiber.Ctx) error {
 		return err
 	}
 
-	jwtResponse, err := u.userService.LoginUser(payload)
+	jwtResponse, err := u.userService.LoginUser(&payload)
 
 	if err != nil {
 		return err
@@ -142,7 +142,7 @@ func (u *UserHandler) FindAllPaginateHandler(c *fiber.Ctx) error {
 		params.Limit = 5
 	}
 
-	meta, users, err := u.userService.FindAllPaginated(params)
+	meta, users, err := u.userService.FindAllPaginated(&params)
 
 	if err != nil {
 		return err
@@ -192,7 +192,7 @@ func (u *UserHandler) UpdateUserByIdHandler(c *fiber.Ctx) error {
 		return err
 	}
 
-	user, err := u.userService.UpdateUserById(id, payload)
+	user, err := u.userService.UpdateUserById(id, &payload)
 
 	if err != nil {
 		return err
