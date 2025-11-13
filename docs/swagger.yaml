@@ -162,6 +162,19 @@ definitions:
       meta:
         $ref: '#/definitions/model.MetaPagination'
     type: object
+  model.ResponseEntityPagination-array_res_FindAllBlogsResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/res.FindAllBlogsResponse'
+        type: array
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.MetaPagination'
+    type: object
   model.ResponseError-any:
     properties:
       code:
@@ -179,6 +192,25 @@ definitions:
       image:
         type: string
       title:
+        type: string
+    type: object
+  res.FindAllBlogsResponse:
+    properties:
+      body:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      owner:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+      userId:
         type: string
     type: object
 host: localhost:3001
@@ -223,6 +255,42 @@ paths:
       security:
       - BearerAuth: []
       summary: Create Blog
+      tags:
+      - Blog
+  /blog/paginate:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all Blogs with pagination
+      parameters:
+      - in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        required: true
+        type: integer
+      - in: query
+        minimum: 1
+        name: page
+        required: true
+        type: integer
+      - in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseEntityPagination-array_res_FindAllBlogsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ResponseError-any'
+      security:
+      - BearerAuth: []
+      summary: Find All Blogs Paginate
       tags:
       - Blog
   /file/upload:

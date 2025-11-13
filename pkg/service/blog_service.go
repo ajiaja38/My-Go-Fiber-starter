@@ -1,8 +1,10 @@
 package service
 
 import (
+	"learn/fiber/pkg/model"
 	"learn/fiber/pkg/model/entity"
 	"learn/fiber/pkg/model/req"
+	"learn/fiber/pkg/model/res"
 	"learn/fiber/pkg/repository"
 
 	"github.com/gofiber/fiber/v2"
@@ -10,6 +12,7 @@ import (
 
 type BlogService interface {
 	CreateBlog(createBlogDto *req.CreateBlogDto, userId string) (*entity.Blog, error)
+	FindAllPaginate(pagination *model.PaginationRequest) (*model.MetaPagination, []res.FindAllBlogsResponse, error)
 }
 
 type blogService struct {
@@ -40,4 +43,23 @@ func (b *blogService) CreateBlog(createBlogDto *req.CreateBlogDto, userId string
 	}
 
 	return blog, nil
+}
+
+func (b *blogService) FindAllPaginate(pagination *model.PaginationRequest) (*model.MetaPagination, []res.FindAllBlogsResponse, error) {
+	blogs, total, err := b.repository.FindAllPagination(pagination.Page, pagination.Limit, pagination.Search)
+
+	if err != nil {
+		return nil, nil, fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	totalPage := (total + int64(pagination.Limit) - 1) / int64(pagination.Limit)
+
+	meta := &model.MetaPagination{
+		Page:      pagination.Page,
+		Limit:     pagination.Limit,
+		TotalPage: int(totalPage),
+		TotalData: int(total),
+	}
+
+	return meta, blogs, nil
 }

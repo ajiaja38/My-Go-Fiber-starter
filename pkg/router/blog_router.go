@@ -12,4 +12,5 @@ func BlogRouter(app fiber.Router, blogHandler *handler.BlogHandler) {
 	blog := app.Group("/blog")
 
 	blog.Post("/", middleware.JWTMidleware, blogHandler.CreateBlogHandler)
+	blog.Get("/paginate", middleware.JWTMidleware, blogHandler.FindAllPaginateHandler)
 }
