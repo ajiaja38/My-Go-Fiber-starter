@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"mime/multipart"
+	"path/filepath"
 	"time"
 
 	env "learn/fiber/config"
@@ -18,6 +19,7 @@ import (
 
 type FileService interface {
 	Upload(file *multipart.FileHeader) (string, error)
+	Serve(s3Key string) (*s3.GetObjectOutput, error)
 }
 
 type fileService struct {
@@ -61,7 +63,7 @@ func (f *fileService) Upload(file *multipart.FileHeader) (string, error) {
 
 	defer fileContent.Close()
 
-	key := fmt.Sprintf("data/kehadiran/image/%s", time.Now().Format("20060102150405_")+file.Filename)
+	key := fmt.Sprintf("%s", time.Now().Format("20060102150405")+filepath.Ext(file.Filename))
 
 	uploader := manager.NewUploader(f.client)
 
@@ -78,7 +80,22 @@ func (f *fileService) Upload(file *multipart.FileHeader) (string, error) {
 		return "", fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	url := fmt.Sprintf("https://%s.nos.wjv-1.neo.id/%s", env.S3_BUCKET.GetValue(), key)
+	url := fmt.Sprintf("%s/%s", env.S3_SERVE_URL.GetValue(), key)
 
 	return url, nil
+}
+
+func (f *fileService) Serve(s3Key string) (*s3.GetObjectOutput, error) {
+	getObjectRequest := &s3.GetObjectInput{
+		Bucket: aws.String(f.bucket),
+		Key:    aws.String(s3Key),
+	}
+
+	resp, err := f.client.GetObject(context.TODO(), getObjectRequest)
+
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	return resp, nil
 }

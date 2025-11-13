@@ -30,6 +30,7 @@ const (
 	S3_BUCKET     EnvKey = "S3_BUCKET"
 	S3_ENDPOINT   EnvKey = "S3_ENDPOINT"
 	S3_REGION     EnvKey = "S3_REGION"
+	S3_SERVE_URL  EnvKey = "S3_SERVE_URL"
 )
 
 func LoadEnv() error {
