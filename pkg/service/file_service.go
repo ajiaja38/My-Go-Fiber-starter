@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 	"mime/multipart"
-	"os"
 	"time"
+
+	env "learn/fiber/config"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -26,11 +27,11 @@ type fileService struct {
 
 func NewFileService() (FileService, error) {
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
-		config.WithRegion(os.Getenv("S3_REGION")),
+		config.WithRegion(env.S3_REGION.GetValue()),
 		config.WithCredentialsProvider(
 			credentials.NewStaticCredentialsProvider(
-				os.Getenv("S3_ACCESS_KEY"),
-				os.Getenv("S3_SECRET_KEY"),
+				env.S3_ACCESS_KEY.GetValue(),
+				env.S3_SECRET_KEY.GetValue(),
 				"",
 			),
 		),
@@ -41,13 +42,13 @@ func NewFileService() (FileService, error) {
 	}
 
 	client := s3.NewFromConfig(cfg, func(o *s3.Options) {
-		o.BaseEndpoint = aws.String(os.Getenv("S3_ENDPOINT"))
+		o.BaseEndpoint = aws.String(env.S3_ENDPOINT.GetValue())
 		o.UsePathStyle = true
 	})
 
 	return &fileService{
 		client: client,
-		bucket: os.Getenv("S3_BUCKET"),
+		bucket: env.S3_BUCKET.GetValue(),
 	}, nil
 }
 
@@ -77,7 +78,7 @@ func (f *fileService) Upload(file *multipart.FileHeader) (string, error) {
 		return "", fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	url := fmt.Sprintf("https://%s.nos.wjv-1.neo.id/%s", os.Getenv("S3_BUCKET"), key)
+	url := fmt.Sprintf("https://%s.nos.wjv-1.neo.id/%s", env.S3_BUCKET.GetValue(), key)
 
 	return url, nil
 }

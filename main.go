@@ -10,7 +10,6 @@ import (
 	"learn/fiber/pkg/router"
 	"learn/fiber/pkg/service"
 	"learn/fiber/utils"
-	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -22,23 +21,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/swagger"
-	"github.com/joho/godotenv"
-	"github.com/sirupsen/logrus"
 )
-
-func init() {
-	logrus.SetFormatter(&logrus.TextFormatter{
-		ForceColors: true,
-	})
-
-	logrus.SetLevel(logrus.DebugLevel)
-
-	err := godotenv.Load()
-
-	if err != nil {
-		logrus.Error("Error loading .env file")
-	}
-}
 
 //	@title			         Swagger Fiber API Docs
 //	@version		       1.0
@@ -59,11 +42,15 @@ func init() {
 // @type						apiKey
 // @description				Masukkan token JWT Anda di sini. Contoh: "Bearer <token>"
 func main() {
+	if err := config.LoadEnv(); err != nil {
+		log.Errorf("Failed to load environment variables: %v", err)
+	}
+
 	app := fiber.New(fiber.Config{
 		ErrorHandler: err.ErrorHandler,
 	})
 
-	port := ":" + os.Getenv("PORT")
+	port := ":" + config.PORT.GetValue()
 
 	if port == "" {
 		port = ":3000"
@@ -116,8 +103,8 @@ func main() {
 	router.UserRouter(route, userHandler)
 	router.FileRouter(route, fileHandler)
 
-	logrus.Infof("Server running on http://localhost%s/api/v1 🚀", port)
-	logrus.Fatal(app.Listen(port))
+	log.Infof("Server running on http://localhost%s/api/v1 🚀", port)
+	log.Fatal(app.Listen(port))
 }
 
 // @Summary		    Root Endpoint

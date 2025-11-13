@@ -3,9 +3,9 @@ package utils
 import (
 	"errors"
 	"fmt"
-	"os"
 	"time"
 
+	"learn/fiber/config"
 	"learn/fiber/pkg/enum"
 	"learn/fiber/pkg/model"
 
@@ -13,7 +13,7 @@ import (
 )
 
 func GenerateAccessToken(jwtPayload model.JwtPayload) (string, error) {
-	secret := os.Getenv("JWT_SECRET_ACCESS_TOKEN")
+	secret := config.JWT_SECRET_ACCESS_TOKEN.GetValue()
 
 	if secret == "" {
 		return "", errors.New("secret not found in environment variables")
@@ -23,7 +23,7 @@ func GenerateAccessToken(jwtPayload model.JwtPayload) (string, error) {
 }
 
 func GenerateRefreshToken(jwtPayload model.JwtPayload) (string, error) {
-	secret := os.Getenv("JWT_SECRET_REFRESH_TOKEN")
+	secret := config.JWT_SECRET_REFRESH_TOKEN.GetValue()
 
 	if secret == "" {
 		return "", errors.New("secret key not found in environment variables")
@@ -33,7 +33,7 @@ func GenerateRefreshToken(jwtPayload model.JwtPayload) (string, error) {
 }
 
 func GenerateNewAccessToken(token string) (string, error) {
-	secret := os.Getenv("JWT_SECRET_REFRESH_TOKEN")
+	secret := config.JWT_SECRET_REFRESH_TOKEN.GetValue()
 
 	payload, err := ValidateToken(token, secret)
 

@@ -2,8 +2,7 @@ package config
 
 import (
 	"fmt"
-	"learn/fiber/utils"
-	"os"
+	"learn/fiber/pkg/model"
 
 	"github.com/gofiber/fiber/v2/log"
 	"gorm.io/driver/postgres"
@@ -11,21 +10,26 @@ import (
 )
 
 func DBConfig() *gorm.DB {
-	host := os.Getenv("DB_HOST")
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	dbname := os.Getenv("DB_NAME")
-	port := os.Getenv("DB_PORT")
+	host := DB_HOST.GetValue()
+	user := DB_USER.GetValue()
+	password := DB_PASSWORD.GetValue()
+	dbname := DB_NAME.GetValue()
+	port := DB_PORT.GetValue()
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta", host, user, password, dbname, port)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
-	utils.AutoMigrateEntity(db)
+	AutoMigrateEntity(db)
 
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
 	return db
+}
+
+func AutoMigrateEntity(db *gorm.DB) {
+	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.Blog{})
 }

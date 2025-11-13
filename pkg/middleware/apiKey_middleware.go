@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"os"
+	"learn/fiber/config"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -9,7 +9,7 @@ import (
 func ApiKeyGuard(c *fiber.Ctx) error {
 	apiKey := c.Get("X-Api-Key")
 
-	if apiKey != os.Getenv("API_KEY") {
+	if apiKey != config.API_KEY.GetValue() {
 		return fiber.NewError(fiber.StatusUnauthorized, "Error, Unauthorized!")
 	}
 
