@@ -8,6 +8,7 @@ import (
 	"time"
 
 	env "learn/fiber/config"
+	"learn/fiber/pkg/model/res"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -18,7 +19,7 @@ import (
 )
 
 type FileService interface {
-	Upload(file *multipart.FileHeader) (string, error)
+	Upload(file *multipart.FileHeader) (*res.UploadFileResponse, error)
 	Serve(s3Key string) (*s3.GetObjectOutput, error)
 }
 
@@ -54,16 +55,16 @@ func NewFileService() (FileService, error) {
 	}, nil
 }
 
-func (f *fileService) Upload(file *multipart.FileHeader) (string, error) {
+func (f *fileService) Upload(file *multipart.FileHeader) (*res.UploadFileResponse, error) {
 	fileContent, err := file.Open()
 
 	if err != nil {
-		return "", fiber.NewError(fiber.StatusBadRequest, err.Error())
+		return nil, fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	defer fileContent.Close()
 
-	key := fmt.Sprintf("%s", time.Now().Format("20060102150405")+filepath.Ext(file.Filename))
+	key := time.Now().Format("20060102150405") + filepath.Ext(file.Filename)
 
 	uploader := manager.NewUploader(f.client)
 
@@ -77,12 +78,17 @@ func (f *fileService) Upload(file *multipart.FileHeader) (string, error) {
 	})
 
 	if err != nil {
-		return "", fiber.NewError(fiber.StatusBadRequest, err.Error())
+		return nil, fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	url := fmt.Sprintf("%s/%s", env.S3_SERVE_URL.GetValue(), key)
 
-	return url, nil
+	urlResponse := res.UploadFileResponse{
+		Url:      url,
+		FileName: key,
+	}
+
+	return &urlResponse, nil
 }
 
 func (f *fileService) Serve(s3Key string) (*s3.GetObjectOutput, error) {

@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"learn/fiber/pkg/model"
+	"learn/fiber/pkg/model/entity"
 
 	"gorm.io/gorm"
 )
@@ -14,12 +14,12 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
 
-func (r *UserRepository) Create(user *model.User) error {
+func (r *UserRepository) Create(user *entity.User) error {
 	return r.db.Create(user).Error
 }
 
-func (r *UserRepository) FindAll() ([]model.User, error) {
-	var users []model.User
+func (r *UserRepository) FindAll() ([]entity.User, error) {
+	var users []entity.User
 
 	if err := r.db.Find(&users).Error; err != nil {
 		return nil, err
@@ -28,11 +28,11 @@ func (r *UserRepository) FindAll() ([]model.User, error) {
 	return users, nil
 }
 
-func (r *UserRepository) FindAllPaginated(page, limit int, search string) ([]model.User, int64, error) {
-	var users []model.User
+func (r *UserRepository) FindAllPaginated(page, limit int, search string) ([]entity.User, int64, error) {
+	var users []entity.User
 	var total int64
 
-	db := r.db.Model(&model.User{})
+	db := r.db.Model(&entity.User{})
 
 	if search != "" {
 		searchPattern := "%" + search + "%"
@@ -61,8 +61,8 @@ func (r *UserRepository) FindAllPaginated(page, limit int, search string) ([]mod
 	return users, total, nil
 }
 
-func (r *UserRepository) FindById(id string) (*model.User, error) {
-	var user model.User
+func (r *UserRepository) FindById(id string) (*entity.User, error) {
+	var user entity.User
 	if err := r.db.First(&user, "id = ?", id).Error; err != nil {
 		return nil, gorm.ErrRecordNotFound
 	}
@@ -70,8 +70,8 @@ func (r *UserRepository) FindById(id string) (*model.User, error) {
 	return &user, nil
 }
 
-func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
-	var user model.User
+func (r *UserRepository) FindByEmail(email string) (*entity.User, error) {
+	var user entity.User
 	if err := r.db.First(&user, "email = ?", email).Error; err != nil {
 		return nil, err
 	}
@@ -79,10 +79,10 @@ func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 	return &user, nil
 }
 
-func (r *UserRepository) Update(user *model.User) error {
+func (r *UserRepository) Update(user *entity.User) error {
 	return r.db.Save(user).Error
 }
 
 func (r *UserRepository) Delete(id string) error {
-	return r.db.Where("id = ?", id).Delete(&model.User{}).Error
+	return r.db.Where("id = ?", id).Delete(&entity.User{}).Error
 }

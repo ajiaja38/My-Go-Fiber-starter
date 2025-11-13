@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"learn/fiber/pkg/model"
+	"learn/fiber/pkg/model/entity"
 
 	"github.com/gofiber/fiber/v2/log"
 	"gorm.io/driver/postgres"
@@ -30,6 +30,6 @@ func DBConfig() *gorm.DB {
 }
 
 func AutoMigrateEntity(db *gorm.DB) {
-	db.AutoMigrate(&model.User{})
-	db.AutoMigrate(&model.Blog{})
+	db.AutoMigrate(&entity.User{})
+	db.AutoMigrate(&entity.Blog{})
 }

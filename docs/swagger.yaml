@@ -1,5 +1,70 @@
 basePath: /api/v1
 definitions:
+  entity.UserLoginRequest:
+    properties:
+      email:
+        example: G2G5e@example.com
+        type: string
+      password:
+        example: P@ssw0rd!
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  entity.UserRegisterRequest:
+    properties:
+      confirmPassword:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/enum.ERole'
+        enum:
+        - admin
+        - user
+      username:
+        type: string
+    required:
+    - confirmPassword
+    - email
+    - password
+    - role
+    - username
+    type: object
+  entity.UserResponse:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      role:
+        $ref: '#/definitions/enum.ERole'
+      updatedAt:
+        type: string
+      username:
+        type: string
+    type: object
+  entity.UserUpdateRequest:
+    properties:
+      email:
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/enum.ERole'
+        enum:
+        - admin
+        - user
+      username:
+        type: string
+    type: object
   enum.ERole:
     enum:
     - admin
@@ -46,14 +111,23 @@ definitions:
       message:
         type: string
     type: object
-  model.ResponseEntity-array_model_UserResponse:
+  model.ResponseEntity-array_entity_UserResponse:
     properties:
       code:
         type: integer
       data:
         items:
-          $ref: '#/definitions/model.UserResponse'
+          $ref: '#/definitions/entity.UserResponse'
         type: array
+      message:
+        type: string
+    type: object
+  model.ResponseEntity-entity_UserResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/entity.UserResponse'
       message:
         type: string
     type: object
@@ -75,22 +149,13 @@ definitions:
       message:
         type: string
     type: object
-  model.ResponseEntity-model_UserResponse:
-    properties:
-      code:
-        type: integer
-      data:
-        $ref: '#/definitions/model.UserResponse'
-      message:
-        type: string
-    type: object
-  model.ResponseEntityPagination-array_model_UserResponse:
+  model.ResponseEntityPagination-array_entity_UserResponse:
     properties:
       code:
         type: integer
       data:
         items:
-          $ref: '#/definitions/model.UserResponse'
+          $ref: '#/definitions/entity.UserResponse'
         type: array
       message:
         type: string
@@ -105,71 +170,6 @@ definitions:
       message:
         type: string
       path:
-        type: string
-    type: object
-  model.UserLoginRequest:
-    properties:
-      email:
-        example: G2G5e@example.com
-        type: string
-      password:
-        example: P@ssw0rd!
-        type: string
-    required:
-    - email
-    - password
-    type: object
-  model.UserRegisterRequest:
-    properties:
-      confirmPassword:
-        type: string
-      email:
-        type: string
-      password:
-        type: string
-      role:
-        allOf:
-        - $ref: '#/definitions/enum.ERole'
-        enum:
-        - admin
-        - user
-      username:
-        type: string
-    required:
-    - confirmPassword
-    - email
-    - password
-    - role
-    - username
-    type: object
-  model.UserResponse:
-    properties:
-      createdAt:
-        type: string
-      deletedAt:
-        type: string
-      email:
-        type: string
-      id:
-        type: string
-      role:
-        $ref: '#/definitions/enum.ERole'
-      updatedAt:
-        type: string
-      username:
-        type: string
-    type: object
-  model.UserUpdateRequest:
-    properties:
-      email:
-        type: string
-      role:
-        allOf:
-        - $ref: '#/definitions/enum.ERole'
-        enum:
-        - admin
-        - user
-      username:
         type: string
     type: object
 host: localhost:3001
@@ -229,7 +229,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.ResponseEntity-array_model_UserResponse'
+            $ref: '#/definitions/model.ResponseEntity-array_entity_UserResponse'
         "401":
           description: Unauthorized
           schema:
@@ -286,7 +286,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.ResponseEntity-model_UserResponse'
+            $ref: '#/definitions/model.ResponseEntity-entity_UserResponse'
         "401":
           description: Unauthorized
           schema:
@@ -310,7 +310,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/model.UserUpdateRequest'
+          $ref: '#/definitions/entity.UserUpdateRequest'
       - description: User ID
         in: path
         name: id
@@ -322,7 +322,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.ResponseEntity-model_UserResponse'
+            $ref: '#/definitions/model.ResponseEntity-entity_UserResponse'
       security:
       - BearerAuth: []
       summary: Update User By Id
@@ -339,7 +339,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/model.UserLoginRequest'
+          $ref: '#/definitions/entity.UserLoginRequest'
       produces:
       - application/json
       responses:
@@ -376,7 +376,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.ResponseEntityPagination-array_model_UserResponse'
+            $ref: '#/definitions/model.ResponseEntityPagination-array_entity_UserResponse'
         "401":
           description: Unauthorized
           schema:
@@ -421,14 +421,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/model.UserRegisterRequest'
+          $ref: '#/definitions/entity.UserRegisterRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/model.ResponseEntity-model_UserResponse'
+            $ref: '#/definitions/model.ResponseEntity-entity_UserResponse'
       summary: Register User
       tags:
       - user

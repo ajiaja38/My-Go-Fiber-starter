@@ -93,7 +93,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.ResponseEntity-array_model_UserResponse"
+                            "$ref": "#/definitions/model.ResponseEntity-array_entity_UserResponse"
                         }
                     },
                     "401": {
@@ -125,7 +125,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.UserLoginRequest"
+                            "$ref": "#/definitions/entity.UserLoginRequest"
                         }
                     }
                 ],
@@ -183,7 +183,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.ResponseEntityPagination-array_model_UserResponse"
+                            "$ref": "#/definitions/model.ResponseEntityPagination-array_entity_UserResponse"
                         }
                     },
                     "401": {
@@ -254,7 +254,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.UserRegisterRequest"
+                            "$ref": "#/definitions/entity.UserRegisterRequest"
                         }
                     }
                 ],
@@ -262,7 +262,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/model.ResponseEntity-model_UserResponse"
+                            "$ref": "#/definitions/model.ResponseEntity-entity_UserResponse"
                         }
                     }
                 }
@@ -299,7 +299,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.ResponseEntity-model_UserResponse"
+                            "$ref": "#/definitions/model.ResponseEntity-entity_UserResponse"
                         }
                     },
                     "401": {
@@ -340,7 +340,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.UserUpdateRequest"
+                            "$ref": "#/definitions/entity.UserUpdateRequest"
                         }
                     },
                     {
@@ -355,7 +355,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.ResponseEntity-model_UserResponse"
+                            "$ref": "#/definitions/model.ResponseEntity-entity_UserResponse"
                         }
                     }
                 }
@@ -410,6 +410,106 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "entity.UserLoginRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "G2G5e@example.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "P@ssw0rd!"
+                }
+            }
+        },
+        "entity.UserRegisterRequest": {
+            "type": "object",
+            "required": [
+                "confirmPassword",
+                "email",
+                "password",
+                "role",
+                "username"
+            ],
+            "properties": {
+                "confirmPassword": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role": {
+                    "enum": [
+                        "admin",
+                        "user"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enum.ERole"
+                        }
+                    ]
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.UserResponse": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "role": {
+                    "$ref": "#/definitions/enum.ERole"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.UserUpdateRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "role": {
+                    "enum": [
+                        "admin",
+                        "user"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enum.ERole"
+                        }
+                    ]
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "enum.ERole": {
             "type": "string",
             "enum": [
@@ -480,7 +580,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.ResponseEntity-array_model_UserResponse": {
+        "model.ResponseEntity-array_entity_UserResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -489,8 +589,22 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/model.UserResponse"
+                        "$ref": "#/definitions/entity.UserResponse"
                     }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ResponseEntity-entity_UserResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/entity.UserResponse"
                 },
                 "message": {
                     "type": "string"
@@ -525,21 +639,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.ResponseEntity-model_UserResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "data": {
-                    "$ref": "#/definitions/model.UserResponse"
-                },
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.ResponseEntityPagination-array_model_UserResponse": {
+        "model.ResponseEntityPagination-array_entity_UserResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -548,7 +648,7 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/model.UserResponse"
+                        "$ref": "#/definitions/entity.UserResponse"
                     }
                 },
                 "message": {
@@ -570,106 +670,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "path": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.UserLoginRequest": {
-            "type": "object",
-            "required": [
-                "email",
-                "password"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string",
-                    "example": "G2G5e@example.com"
-                },
-                "password": {
-                    "type": "string",
-                    "example": "P@ssw0rd!"
-                }
-            }
-        },
-        "model.UserRegisterRequest": {
-            "type": "object",
-            "required": [
-                "confirmPassword",
-                "email",
-                "password",
-                "role",
-                "username"
-            ],
-            "properties": {
-                "confirmPassword": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "role": {
-                    "enum": [
-                        "admin",
-                        "user"
-                    ],
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/enum.ERole"
-                        }
-                    ]
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.UserResponse": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "role": {
-                    "$ref": "#/definitions/enum.ERole"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.UserUpdateRequest": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "role": {
-                    "enum": [
-                        "admin",
-                        "user"
-                    ],
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/enum.ERole"
-                        }
-                    ]
-                },
-                "username": {
                     "type": "string"
                 }
             }

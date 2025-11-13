@@ -2,6 +2,7 @@ package service
 
 import (
 	"learn/fiber/pkg/model"
+	"learn/fiber/pkg/model/entity"
 	"learn/fiber/pkg/repository"
 	"learn/fiber/utils"
 
@@ -10,13 +11,13 @@ import (
 )
 
 type UserService interface {
-	RegisterUser(payload *model.UserRegisterRequest) (*model.UserResponse, error)
-	LoginUser(payload *model.UserLoginRequest) (*model.JwtResponse, error)
+	RegisterUser(payload *entity.UserRegisterRequest) (*entity.UserResponse, error)
+	LoginUser(payload *entity.UserLoginRequest) (*model.JwtResponse, error)
 	RefreshToken(refreshToken string) (*model.RefreshTokenResponse, error)
-	FindAll() ([]model.UserResponse, error)
-	FindAllPaginated(pagination *model.PaginationRequest) (*model.MetaPagination, []model.UserResponse, error)
-	FindById(id string) (*model.UserResponse, error)
-	UpdateUserById(id string, payload *model.UserUpdateRequest) (*model.UserResponse, error)
+	FindAll() ([]entity.UserResponse, error)
+	FindAllPaginated(pagination *model.PaginationRequest) (*model.MetaPagination, []entity.UserResponse, error)
+	FindById(id string) (*entity.UserResponse, error)
+	UpdateUserById(id string, payload *entity.UserUpdateRequest) (*entity.UserResponse, error)
 	DeleteUserById(id string) error
 }
 
@@ -30,7 +31,7 @@ func NewUserService(repository *repository.UserRepository) UserService {
 	}
 }
 
-func (u *userService) RegisterUser(payload *model.UserRegisterRequest) (*model.UserResponse, error) {
+func (u *userService) RegisterUser(payload *entity.UserRegisterRequest) (*entity.UserResponse, error) {
 	if payload.Password != payload.ConfirmPassword {
 		return nil, fiber.NewError(fiber.StatusBadRequest, "Password and Confirm Password do not match")
 	}
@@ -41,7 +42,7 @@ func (u *userService) RegisterUser(payload *model.UserRegisterRequest) (*model.U
 		return nil, fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	user := model.User{
+	user := entity.User{
 		Email:    payload.Email,
 		Username: payload.Username,
 		Password: passwordHashed,
@@ -57,7 +58,7 @@ func (u *userService) RegisterUser(payload *model.UserRegisterRequest) (*model.U
 	return &userResponse, nil
 }
 
-func (u *userService) LoginUser(payload *model.UserLoginRequest) (*model.JwtResponse, error) {
+func (u *userService) LoginUser(payload *entity.UserLoginRequest) (*model.JwtResponse, error) {
 	user, err := u.repository.FindByEmail(payload.Email)
 
 	if err != nil {
@@ -103,14 +104,14 @@ func (u *userService) RefreshToken(refreshToken string) (*model.RefreshTokenResp
 	}, nil
 }
 
-func (u *userService) FindAll() ([]model.UserResponse, error) {
+func (u *userService) FindAll() ([]entity.UserResponse, error) {
 	users, err := u.repository.FindAll()
 
 	if err != nil {
 		return nil, err
 	}
 
-	var userResponses []model.UserResponse = []model.UserResponse{}
+	var userResponses []entity.UserResponse = []entity.UserResponse{}
 
 	for _, user := range users {
 		userResponse := transformUserResponse(user)
@@ -120,14 +121,14 @@ func (u *userService) FindAll() ([]model.UserResponse, error) {
 	return userResponses, nil
 }
 
-func (u *userService) FindAllPaginated(pagination *model.PaginationRequest) (*model.MetaPagination, []model.UserResponse, error) {
+func (u *userService) FindAllPaginated(pagination *model.PaginationRequest) (*model.MetaPagination, []entity.UserResponse, error) {
 	users, totalData, err := u.repository.FindAllPaginated(pagination.Page, pagination.Limit, pagination.Search)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var userResponses []model.UserResponse = []model.UserResponse{}
+	var userResponses []entity.UserResponse = []entity.UserResponse{}
 
 	for _, user := range users {
 		userResponse := transformUserResponse(user)
@@ -146,7 +147,7 @@ func (u *userService) FindAllPaginated(pagination *model.PaginationRequest) (*mo
 	return meta, userResponses, nil
 }
 
-func (u *userService) FindById(id string) (*model.UserResponse, error) {
+func (u *userService) FindById(id string) (*entity.UserResponse, error) {
 	user, err := u.repository.FindById(id)
 
 	if err != nil {
@@ -158,7 +159,7 @@ func (u *userService) FindById(id string) (*model.UserResponse, error) {
 	return &userResponse, nil
 }
 
-func (u *userService) UpdateUserById(id string, payload *model.UserUpdateRequest) (*model.UserResponse, error) {
+func (u *userService) UpdateUserById(id string, payload *entity.UserUpdateRequest) (*entity.UserResponse, error) {
 	user, err := u.repository.FindById(id)
 
 	if err != nil {
@@ -186,8 +187,8 @@ func (u *userService) DeleteUserById(id string) error {
 	return nil
 }
 
-func transformUserResponse(user model.User) model.UserResponse {
-	userResponse := model.UserResponse{
+func transformUserResponse(user entity.User) entity.UserResponse {
+	userResponse := entity.UserResponse{
 		Id:        user.Id,
 		Email:     user.Email,
 		Username:  user.Username,

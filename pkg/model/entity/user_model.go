@@ -1,4 +1,4 @@
-package model
+package entity
 
 import (
 	"learn/fiber/pkg/enum"

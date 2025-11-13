@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"learn/fiber/pkg/model"
+	"learn/fiber/pkg/model/entity"
 	"learn/fiber/pkg/service"
 	"learn/fiber/utils"
 
@@ -27,11 +28,11 @@ func NewUserHandler(userService service.UserService) *UserHandler {
 // @Tags			       user
 // @Accept			     json
 // @Produce		    json
-// @Param			request	body	model.UserRegisterRequest	true		"Register Request Payload"
-// @Success		 		 		201							{object}	model.ResponseEntity[model.UserResponse]
+// @Param			request	body	entity.UserRegisterRequest	true		"Register Request Payload"
+// @Success		 		 		201							{object}	model.ResponseEntity[entity.UserResponse]
 // @Router			     /user/register [post]
 func (u *UserHandler) RegisterUserHandler(c *fiber.Ctx) error {
-	var payload model.UserRegisterRequest
+	var payload entity.UserRegisterRequest
 
 	if err := utils.ValidateRequestBody(c, u.validator, &payload); err != nil {
 		return err
@@ -55,11 +56,11 @@ func (u *UserHandler) RegisterUserHandler(c *fiber.Ctx) error {
 // @Tags			       user
 // @Accept			     json
 // @Produce		    json
-// @Param			request	body	model.UserLoginRequest	true		"Login Request Payload"
+// @Param			request	body	entity.UserLoginRequest	true		"Login Request Payload"
 // @Success		 		 		200						{object}	model.ResponseEntity[model.JwtResponse]
 // @Router			     /user/login [post]
 func (u *UserHandler) LoginUserHandler(c *fiber.Ctx) error {
-	var payload model.UserLoginRequest
+	var payload entity.UserLoginRequest
 
 	if err := utils.ValidateRequestBody(c, u.validator, &payload); err != nil {
 		return err
@@ -105,7 +106,7 @@ func (u *UserHandler) RefreshTokenHandler(c *fiber.Ctx) error {
 // @Accept			     json
 // @Produce		    json
 // @Security		        BearerAuth
-// @Success		 	 	200	{object}	model.ResponseEntity[[]model.UserResponse]
+// @Success		 	 	200	{object}	model.ResponseEntity[[]entity.UserResponse]
 // @Failure		 	 	401	{object}	model.ResponseError[any]
 // @Router			     /user [get]
 func (u *UserHandler) FindAllHandler(c *fiber.Ctx) error {
@@ -125,7 +126,7 @@ func (u *UserHandler) FindAllHandler(c *fiber.Ctx) error {
 // @Produce		    json
 // @Security		        BearerAuth
 // @Param			request	query	model.PaginationRequest	true		"Pagination Request Payload"
-// @Success		 		 		200						{object}	model.ResponseEntityPagination[[]model.UserResponse]
+// @Success		 		 		200						{object}	model.ResponseEntityPagination[[]entity.UserResponse]
 // @Failure		 		 		401						{object}	model.ResponseError[any]
 // @Router			     /user/paginate [get]
 func (u *UserHandler) FindAllPaginateHandler(c *fiber.Ctx) error {
@@ -159,7 +160,7 @@ func (u *UserHandler) FindAllPaginateHandler(c *fiber.Ctx) error {
 // @Produce		    json
 // @Security		        BearerAuth
 // @Param			id	path	string	true		"User ID"
-// @Success		 	 		200		{object}	model.ResponseEntity[model.UserResponse]
+// @Success		 	 		200		{object}	model.ResponseEntity[entity.UserResponse]
 // @Failure		 	 		401		{object}	model.ResponseError[any]
 // @Failure		 	 		404		{object}	model.ResponseError[any]
 // @Router			     /user/{id} [get]
@@ -181,13 +182,13 @@ func (u *UserHandler) FindByIdHandler(c *fiber.Ctx) error {
 // @Accept			     json
 // @Produce		    json
 // @Security		        BearerAuth
-// @Param			request	body	model.UserUpdateRequest	true		"Update User Request Payload"
-// @Param			id		path	string					true		"User ID"
-// @Success		 		 		200						{object}	model.ResponseEntity[model.UserResponse]
+// @Param			request	body	entity.UserUpdateRequest	true		"Update User Request Payload"
+// @Param			id		path	string						true		"User ID"
+// @Success		 		 		200							{object}	model.ResponseEntity[entity.UserResponse]
 // @Router			     /user/{id} [put]
 func (u *UserHandler) UpdateUserByIdHandler(c *fiber.Ctx) error {
 	id := c.Params("id")
-	var payload model.UserUpdateRequest
+	var payload entity.UserUpdateRequest
 
 	if err := utils.ValidateRequestBody(c, u.validator, &payload); err != nil {
 		return err
