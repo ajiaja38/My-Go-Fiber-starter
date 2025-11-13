@@ -60,9 +60,11 @@ func main() {
 
 	// Init Repository
 	userRepository := repository.NewUserRepository(db)
+	blogRepository := repository.NewBlogRepository(db)
 
 	// Init Service
 	userService := service.NewUserService(userRepository)
+	blogService := service.NewBlogService(blogRepository, userRepository)
 	fileService, err := service.NewFileService()
 
 	if err != nil {
@@ -71,6 +73,7 @@ func main() {
 
 	// Init Handler
 	userHandler := handler.NewUserHandler(userService)
+	blogHandler := handler.NewBlogHandler(blogService)
 	fileHandler := handler.NewFileHandler(fileService)
 
 	app.Use(logger.New())
@@ -101,6 +104,7 @@ func main() {
 
 	// Init Router
 	router.UserRouter(route, userHandler)
+	router.BlogRouter(route, blogHandler)
 	router.FileRouter(route, fileHandler)
 
 	log.Infof("Server running on http://localhost%s/api/v1 🚀", port)

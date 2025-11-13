@@ -172,6 +172,15 @@ definitions:
       path:
         type: string
     type: object
+  req.CreateBlogDto:
+    properties:
+      body:
+        type: string
+      image:
+        type: string
+      title:
+        type: string
+    type: object
 host: localhost:3001
 info:
   contact:
@@ -196,6 +205,26 @@ paths:
       summary: Root Endpoint
       tags:
       - status
+  /blog:
+    post:
+      consumes:
+      - application/json
+      description: Create a new blog
+      parameters:
+      - description: Create Blog Request Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.CreateBlogDto'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Create Blog
+      tags:
+      - Blog
   /file/upload:
     post:
       consumes:

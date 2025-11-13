@@ -39,6 +39,38 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/blog": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new blog",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Blog"
+                ],
+                "summary": "Create Blog",
+                "parameters": [
+                    {
+                        "description": "Create Blog Request Payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.CreateBlogDto"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/file/upload": {
             "post": {
                 "description": "Upload File to S3",
@@ -670,6 +702,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "path": {
+                    "type": "string"
+                }
+            }
+        },
+        "req.CreateBlogDto": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }
