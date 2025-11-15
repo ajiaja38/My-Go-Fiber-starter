@@ -107,7 +107,7 @@ func main() {
 	router.BlogRouter(route, blogHandler)
 	router.FileRouter(route, fileHandler)
 
-	log.Infof("Server running on http://localhost%s/api/v1 🚀", port)
+	log.Infof("Server running on http://127.0.0.1%s/api/v1 🚀", port)
 	log.Fatal(app.Listen(port))
 }
 
