@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"learn/fiber/pkg/model"
 	"learn/fiber/pkg/model/req"
 	"learn/fiber/pkg/service"
@@ -51,9 +52,8 @@ func (b *BlogHandler) CreateBlogHandler(c *fiber.Ctx) error {
 // @Tags			      Blog
 // @Accept			     json
 // @Produce		    json
-// @Security		        BearerAuth
 // @Param			request	query	model.PaginationRequest	true		"Pagination Request Payload"
-// @Success		 		 		200						{object}	model.ResponseEntityPagination[[]res.FindAllBlogsResponse]
+// @Success		 		 		200						{object}	model.ResponseEntityPagination[[]res.FindBlogResponse]
 // @Failure		 		 		401						{object}	model.ResponseError[any]
 // @Router			     /blog/paginate [get]
 func (b *BlogHandler) FindAllPaginateHandler(c *fiber.Ctx) error {
@@ -84,4 +84,26 @@ func (b *BlogHandler) FindAllPaginateHandler(c *fiber.Ctx) error {
 		blogs,
 		meta,
 	)
+}
+
+// @Summary		    Find Blog By Id
+// @Description	Get Blog details by ID
+// @Tags			      Blog
+// @Accept			     json
+// @Produce		    json
+// @Param			id	path	string	true		"blog ID"
+// @Success		 	 		200		{object}	model.ResponseEntityPagination[res.FindBlogResponse]
+// @Failure		 	 		401		{object}	model.ResponseError[any]
+// @Failure		 	 		404		{object}	model.ResponseError[any]
+// @Router			     /blog/{id} [get]
+func (b *BlogHandler) FindBlogByIdHandler(c *fiber.Ctx) error {
+	id := c.Params("id")
+
+	blog, err := b.blogService.FindById(id)
+
+	if err != nil {
+		return err
+	}
+
+	return utils.SuccessResponse(c, fiber.StatusOK, fmt.Sprintf("Success Get blog %s", blog.Title), blog)
 }

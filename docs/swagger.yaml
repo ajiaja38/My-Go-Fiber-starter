@@ -162,14 +162,25 @@ definitions:
       meta:
         $ref: '#/definitions/model.MetaPagination'
     type: object
-  model.ResponseEntityPagination-array_res_FindAllBlogsResponse:
+  model.ResponseEntityPagination-array_res_FindBlogResponse:
     properties:
       code:
         type: integer
       data:
         items:
-          $ref: '#/definitions/res.FindAllBlogsResponse'
+          $ref: '#/definitions/res.FindBlogResponse'
         type: array
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/model.MetaPagination'
+    type: object
+  model.ResponseEntityPagination-res_FindBlogResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/res.FindBlogResponse'
       message:
         type: string
       meta:
@@ -194,7 +205,7 @@ definitions:
       title:
         type: string
     type: object
-  res.FindAllBlogsResponse:
+  res.FindBlogResponse:
     properties:
       body:
         type: string
@@ -257,6 +268,35 @@ paths:
       summary: Create Blog
       tags:
       - Blog
+  /blog/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Blog details by ID
+      parameters:
+      - description: blog ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseEntityPagination-res_FindBlogResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ResponseError-any'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ResponseError-any'
+      summary: Find Blog By Id
+      tags:
+      - Blog
   /blog/paginate:
     get:
       consumes:
@@ -283,13 +323,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.ResponseEntityPagination-array_res_FindAllBlogsResponse'
+            $ref: '#/definitions/model.ResponseEntityPagination-array_res_FindBlogResponse'
         "401":
           description: Unauthorized
           schema:
             $ref: '#/definitions/model.ResponseError-any'
-      security:
-      - BearerAuth: []
       summary: Find All Blogs Paginate
       tags:
       - Blog

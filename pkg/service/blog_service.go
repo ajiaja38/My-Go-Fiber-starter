@@ -12,7 +12,8 @@ import (
 
 type BlogService interface {
 	CreateBlog(createBlogDto *req.CreateBlogDto, userId string) (*entity.Blog, error)
-	FindAllPaginate(pagination *model.PaginationRequest) (*model.MetaPagination, []res.FindAllBlogsResponse, error)
+	FindAllPaginate(pagination *model.PaginationRequest) (*model.MetaPagination, *[]res.FindBlogResponse, error)
+	FindById(id string) (*res.FindBlogResponse, error)
 }
 
 type blogService struct {
@@ -45,7 +46,7 @@ func (b *blogService) CreateBlog(createBlogDto *req.CreateBlogDto, userId string
 	return blog, nil
 }
 
-func (b *blogService) FindAllPaginate(pagination *model.PaginationRequest) (*model.MetaPagination, []res.FindAllBlogsResponse, error) {
+func (b *blogService) FindAllPaginate(pagination *model.PaginationRequest) (*model.MetaPagination, *[]res.FindBlogResponse, error) {
 	blogs, total, err := b.repository.FindAllPagination(pagination.Page, pagination.Limit, pagination.Search)
 
 	if err != nil {
@@ -62,4 +63,14 @@ func (b *blogService) FindAllPaginate(pagination *model.PaginationRequest) (*mod
 	}
 
 	return meta, blogs, nil
+}
+
+func (b *blogService) FindById(id string) (*res.FindBlogResponse, error) {
+	blog, err := b.repository.FindById(id)
+
+	if err != nil {
+		return nil, fiber.NewError(fiber.StatusNotFound, err.Error())
+	}
+
+	return blog, nil
 }

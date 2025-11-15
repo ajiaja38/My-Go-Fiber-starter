@@ -73,11 +73,6 @@ const docTemplate = `{
         },
         "/blog/paginate": {
             "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "Get a list of all Blogs with pagination",
                 "consumes": [
                     "application/json"
@@ -115,11 +110,55 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.ResponseEntityPagination-array_res_FindAllBlogsResponse"
+                            "$ref": "#/definitions/model.ResponseEntityPagination-array_res_FindBlogResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseError-any"
+                        }
+                    }
+                }
+            }
+        },
+        "/blog/{id}": {
+            "get": {
+                "description": "Get Blog details by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Blog"
+                ],
+                "summary": "Find Blog By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "blog ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseEntityPagination-res_FindBlogResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResponseError-any"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/model.ResponseError-any"
                         }
@@ -747,7 +786,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.ResponseEntityPagination-array_res_FindAllBlogsResponse": {
+        "model.ResponseEntityPagination-array_res_FindBlogResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -756,8 +795,25 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/res.FindAllBlogsResponse"
+                        "$ref": "#/definitions/res.FindBlogResponse"
                     }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "meta": {
+                    "$ref": "#/definitions/model.MetaPagination"
+                }
+            }
+        },
+        "model.ResponseEntityPagination-res_FindBlogResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/res.FindBlogResponse"
                 },
                 "message": {
                     "type": "string"
@@ -796,7 +852,7 @@ const docTemplate = `{
                 }
             }
         },
-        "res.FindAllBlogsResponse": {
+        "res.FindBlogResponse": {
             "type": "object",
             "properties": {
                 "body": {

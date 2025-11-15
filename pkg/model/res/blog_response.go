@@ -1,12 +1,16 @@
 package res
 
-type FindAllBlogsResponse struct {
+type FindOwnBlogResponse struct {
 	ID        string `json:"id"`
 	Title     string `json:"title"`
 	Body      string `json:"body"`
 	Image     string `json:"image"`
 	UserId    string `json:"userId"`
-	Owner     string `json:"owner"`
 	CreatedAt string `json:"createdAt"`
 	UpdatedAt string `json:"updatedAt"`
+}
+
+type FindBlogResponse struct {
+	FindOwnBlogResponse
+	Owner string `json:"owner"`
 }

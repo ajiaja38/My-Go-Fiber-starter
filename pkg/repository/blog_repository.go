@@ -20,8 +20,8 @@ func (r *BlogRepository) Create(blog *entity.Blog) error {
 	return r.db.Create(blog).Error
 }
 
-func (r *BlogRepository) FindAllPagination(page, limit int, search string) ([]res.FindAllBlogsResponse, int64, error) {
-	var blogs []res.FindAllBlogsResponse = make([]res.FindAllBlogsResponse, 0)
+func (r *BlogRepository) FindAllPagination(page, limit int, search string) (*[]res.FindBlogResponse, int64, error) {
+	var blogs []res.FindBlogResponse = make([]res.FindBlogResponse, 0)
 	var total int64
 
 	search = "%" + strings.ToLower(search) + "%"
@@ -64,5 +64,28 @@ func (r *BlogRepository) FindAllPagination(page, limit int, search string) ([]re
 		return nil, 0, err
 	}
 
-	return blogs, total, nil
+	return &blogs, total, nil
+}
+
+func (r *BlogRepository) FindById(id string) (*res.FindBlogResponse, error) {
+	var blog res.FindBlogResponse
+
+	if row := r.db.Raw(`
+        SELECT
+            b.id,
+            b.title,
+            b.body,
+            b.image,
+            b.user_id,
+            u.username as owner,
+            b.created_at,
+            b.updated_at
+        FROM blogs b
+        JOIN users u ON b.user_id = u.id
+        WHERE b.id = ?
+    `, id).Scan(&blog).RowsAffected; row == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+
+	return &blog, nil
 }
