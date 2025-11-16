@@ -62,11 +62,11 @@ func (u *userService) LoginUser(payload *entity.UserLoginRequest) (*model.JwtRes
 	user, err := u.repository.FindByEmail(payload.Email)
 
 	if err != nil {
-		return nil, fiber.NewError(fiber.StatusUnauthorized, "Invalid email or password")
+		return nil, fiber.NewError(fiber.StatusUnauthorized, "Invalid email or password!")
 	}
 
 	if !checkPasswordHash(payload.Password, user.Password) {
-		return nil, fiber.NewError(fiber.StatusUnauthorized, "Invalid email or password")
+		return nil, fiber.NewError(fiber.StatusUnauthorized, "Invalid email or password!")
 	}
 
 	jwtPayload := model.JwtPayload{
