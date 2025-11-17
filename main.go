@@ -25,7 +25,7 @@ import (
 
 //	@title			         Swagger Fiber API Docs
 //	@version		       1.0
-//	@description	   Documentation API Fiber By M. Aji Perdana.
+//	@description	   Documentation API Fiber By M. Aji Perdana | 2025.
 //	@termsOfService	http://swagger.io/terms/
 
 //	@contact.name	  M. Aji Perdana

@@ -899,7 +899,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Swagger Fiber API Docs",
-	Description:      "Documentation API Fiber By M. Aji Perdana.",
+	Description:      "Documentation API Fiber By M. Aji Perdana | 2025.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
