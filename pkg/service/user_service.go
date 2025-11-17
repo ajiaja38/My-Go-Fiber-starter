@@ -128,7 +128,7 @@ func (u *userService) FindAllPaginated(pagination *model.PaginationRequest) (*mo
 		return nil, nil, err
 	}
 
-	var userResponses []entity.UserResponse = []entity.UserResponse{}
+	userResponses := []entity.UserResponse{}
 
 	for _, user := range users {
 		userResponse := transformUserResponse(user)
