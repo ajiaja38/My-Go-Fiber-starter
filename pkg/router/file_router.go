@@ -8,8 +8,10 @@ import (
 )
 
 func FileRouter(app fiber.Router, fileHandler *handler.FileHandler) {
+
 	file := app.Group("/file")
 
 	file.Post("/upload", middleware.ApiKeyGuard, fileHandler.UploadFileHandler)
 	file.Get("/:key", fileHandler.ServeFileHandler)
+
 }

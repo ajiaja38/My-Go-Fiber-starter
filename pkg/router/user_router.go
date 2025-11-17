@@ -14,10 +14,26 @@ func UserRouter(app fiber.Router, userHandler *handler.UserHandler) {
 
 	user.Post("/register", userHandler.RegisterUserHandler)
 	user.Post("/login", userHandler.LoginUserHandler)
-	user.Get("/", middleware.JWTMidleware, middleware.RoleMiddleware(enum.ROLE_USER, enum.ROLE_ADMIN), userHandler.FindAllHandler)
-	user.Get("/paginate", middleware.JWTMidleware, middleware.RoleMiddleware(enum.ROLE_USER, enum.ROLE_ADMIN), userHandler.FindAllPaginateHandler)
+	user.Get(
+		"/",
+		middleware.JWTMidleware,
+		middleware.RoleMiddleware(enum.ROLE_USER, enum.ROLE_ADMIN),
+		userHandler.FindAllHandler,
+	)
+	user.Get(
+		"/paginate",
+		middleware.JWTMidleware,
+		middleware.RoleMiddleware(enum.ROLE_USER, enum.ROLE_ADMIN),
+		userHandler.FindAllPaginateHandler,
+	)
 	user.Get("/:id", middleware.JWTMidleware, userHandler.FindByIdHandler)
 	user.Put("/refresh-token", userHandler.RefreshTokenHandler)
 	user.Put("/:id", middleware.JWTMidleware, userHandler.UpdateUserByIdHandler)
-	user.Delete("/:id", middleware.JWTMidleware, middleware.RoleMiddleware(enum.ROLE_ADMIN), userHandler.DeleteUserByIdHandler)
+	user.Delete(
+		"/:id",
+		middleware.JWTMidleware,
+		middleware.RoleMiddleware(enum.ROLE_ADMIN),
+		userHandler.DeleteUserByIdHandler,
+	)
+
 }
