@@ -91,7 +91,7 @@ func main() {
 		Max:        30,
 		Expiration: 10 * time.Second,
 		LimitReached: func(c *fiber.Ctx) error {
-			return fiber.NewError(fiber.StatusTooManyRequests, "Sorry, To Many Request")
+			return fiber.NewError(fiber.StatusTooManyRequests, "Sorry, To Many Request. Please try again later.")
 		},
 	}))
 
